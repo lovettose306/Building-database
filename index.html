@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Better Elevation Filter 立面筛选器</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f0eff5;
+  color: #333;
+  line-height: 1.6;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+h1 { text-align: center; color: #5b21b6; margin-bottom: 24px; font-size: 1.8em; }
+
+/* ===== Filter Panel ===== */
+.filter-panel {
+  background: linear-gradient(135deg, #faf8ff 0%, #f5f0ff 100%);
+  border: 2px solid #8b5cf6;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 12px rgba(139,92,246,0.1);
+}
+.filter-panel h2 {
+  color: #6d28d9; margin-bottom: 20px; font-size: 1.3em;
+  border-bottom: 1px solid #e0d4f5; padding-bottom: 10px;
+}
+.filter-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px;
+}
+@media (max-width: 640px) { .filter-grid { grid-template-columns: 1fr; } }
+.filter-group label {
+  display: block; font-weight: 600; margin-bottom: 6px;
+  color: #5b21b6; font-size: 0.88em;
+}
+.filter-group select,
+.filter-group input[type="number"] {
+  width: 100%; padding: 8px 12px;
+  border: 1.5px solid #d4d0e0; border-radius: 8px;
+  font-size: 14px; background: white; transition: border-color 0.2s;
+}
+.filter-group select:focus,
+.filter-group input:focus {
+  outline: none; border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+}
+.range-inputs { display: flex; gap: 8px; align-items: center; }
+.range-inputs input { width: 42%; }
+.range-inputs span { color: #aaa; }
+.filter-actions {
+  grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 4px;
+}
+.btn-reset {
+  background: #7c3aed; color: white; border: none;
+  padding: 10px 24px; border-radius: 8px; cursor: pointer;
+  font-size: 14px; font-weight: 600; transition: background 0.2s;
+}
+.btn-reset:hover { background: #6d28d9; }
+
+/* ===== Multi-Select Component ===== */
+.multi-select { position: relative; user-select: none; }
+.ms-trigger {
+  width: 100%; padding: 7px 12px;
+  border: 1.5px solid #d4d0e0; border-radius: 8px;
+  font-size: 14px; background: white; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  min-height: 38px; gap: 6px; transition: border-color 0.2s;
+}
+.ms-trigger:hover { border-color: #a78bfa; }
+.multi-select.open .ms-trigger {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+  border-radius: 8px 8px 0 0;
+}
+.ms-pills { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+.ms-pill {
+  background: #ede9fe; color: #5b21b6;
+  padding: 2px 10px; border-radius: 12px;
+  font-size: 12px; font-weight: 500; white-space: nowrap;
+}
+.ms-placeholder { color: #999; font-size: 14px; }
+.ms-arrow {
+  font-size: 10px; color: #999; flex-shrink: 0; transition: transform 0.2s;
+}
+.multi-select.open .ms-arrow { transform: rotate(180deg); }
+.ms-dropdown {
+  display: none; position: absolute; top: 100%;
+  left: -1.5px; right: -1.5px;
+  background: white; border: 1.5px solid #8b5cf6;
+  border-top: 1px solid #e0d4f5; border-radius: 0 0 8px 8px;
+  max-height: 200px; overflow-y: auto; z-index: 100;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+.multi-select.open .ms-dropdown { display: block; }
+.ms-option {
+  padding: 7px 12px; display: flex; align-items: center;
+  gap: 8px; cursor: pointer; font-size: 13px; transition: background 0.1s;
+}
+.ms-option:hover { background: #f5f0ff; }
+.ms-option input[type="checkbox"] {
+  accent-color: #7c3aed; width: 15px; height: 15px; cursor: pointer;
+}
+.ms-option span { pointer-events: none; }
+
+/* ===== Results Header ===== */
+.results-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 16px;
+}
+.results-count { color: #666; font-size: 0.95em; }
+.sort-select {
+  padding: 6px 12px; border: 1px solid #ddd;
+  border-radius: 6px; font-size: 13px; background: white;
+}
+
+/* ===== Card ===== */
+.card {
+  background: white; border-radius: 14px;
+  padding: 24px 28px; margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border-left: 5px solid #8b5cf6; transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.card-title {
+  font-size: 1.5em; color: #7c3aed; font-weight: 800; margin-bottom: 12px;
+}
+.card-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 0.82em; font-weight: 500;
+}
+.tag-size       { background: #eff6ff; color: #1e40af; }
+.tag-story      { background: #f0fdf4; color: #166534; }
+.tag-community  { background: #fef2f2; color: #991b1b; }
+.tag-material   { background: #fefce8; color: #854d0e; }
+.tag-style      { background: #fdf4ff; color: #86198f; }
+.tag-project    { background: #f0fdfa; color: #115e59; }
+.tag-entry      { background: #e0f2fe; color: #075985; }
+.tag-garage     { background: #fff7ed; color: #9a3412; }
+.tag-tags       { background: #f1f5f9; color: #475569; }
+.tag-revit      { background: #dcfce7; color: #15803d; font-weight: 700; }
+
+.card-desc {
+  border-left: 3px solid #e9e5f5; padding: 10px 14px;
+  margin: 14px 0; color: #555; font-size: 0.9em; line-height: 1.7;
+  white-space: pre-wrap; background: #faf9fc; border-radius: 0 8px 8px 0;
+}
+.card-images { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.card-images img {
+  max-width: 320px; height: 200px; border-radius: 10px;
+  object-fit: contain; background: #000; border: 1px solid #eee;
+  cursor: pointer; transition: transform 0.2s;
+}
+.card-images img:hover { transform: scale(1.03); }
+.no-results { text-align: center; padding: 60px 20px; color: #999; font-size: 1.1em; }
+
+/* ===== Lightbox ===== */
+.lightbox {
+  display: none; position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%; background: rgba(0,0,0,0.9);
+  z-index: 1000; justify-content: center; align-items: center; cursor: pointer;
+}
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92%; max-height: 92%; border-radius: 8px; object-fit: contain; }
+.lightbox .close-hint {
+  position: fixed; top: 20px; right: 28px;
+  color: rgba(255,255,255,0.6); font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🏠 Better Elevation Filter 立面筛选器</h1>
+
+  <div class="filter-panel">
+    <h2>🔍 筛选条件 Filters</h2>
+    <div class="filter-grid">
+
+      <!-- ★ Multi-select filters ★ -->
+      <div class="filter-group">
+        <label>📍 Community 社区</label>
+        <div class="multi-select" id="ms-community"></div>
+      </div>
+      <div class="filter-group">
+        <label>🏢 Story 层数</label>
+        <div class="multi-select" id="ms-story"></div>
+      </div>
+      <div class="filter-group">
+        <label>🧱 Wall Material 墙体材料</label>
+        <div class="multi-select" id="ms-material"></div>
+      </div>
+      <div class="filter-group">
+        <label>🎨 Style 风格</label>
+        <div class="multi-select" id="ms-style"></div>
+      </div>
+      <div class="filter-group">
+        <label>🏷️ Tags 标签</label>
+        <div class="multi-select" id="ms-tags"></div>
+      </div>
+
+      <!-- ★ Single-select filters ★ -->
+      <div class="filter-group">
+        <label>🏗️ Project 项目</label>
+        <select id="f-project"><option value="">— 全部 —</option></select>
+      </div>
+      <div class="filter-group">
+        <label>🚪 Entry 入口</label>
+        <select id="f-entry"><option value="">— 全部 —</option></select>
+      </div>
+      <div class="filter-group">
+        <label>🚗 Garage 车库</label>
+        <select id="f-garage"><option value="">— 全部 —</option></select>
+      </div>
+      <div class="filter-group">
+        <label>📐 Revit Model</label>
+        <select id="f-revit">
+          <option value="">— 全部 —</option>
+          <option value="true">✅ 有</option>
+          <option value="false">❌ 无</option>
+        </select>
+      </div>
+
+      <!-- ★ Range filters ★ -->
+      <div class="filter-group">
+        <label>🏠 Facade Width 门面宽度 (ft)</label>
+        <div class="range-inputs">
+          <input type="number" id="facade-min" placeholder="最小">
+          <span>—</span>
+          <input type="number" id="facade-max" placeholder="最大">
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>📏 Lot Width 地块宽度 (ft)</label>
+        <div class="range-inputs">
+          <input type="number" id="lotw-min" placeholder="最小">
+          <span>—</span>
+          <input type="number" id="lotw-max" placeholder="最大">
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-reset" onclick="resetFilters()">🔄 重置筛选</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-header">
+    <div class="results-count" id="results-count"></div>
+    <select class="sort-select" id="sort-select" onchange="applyFilters()">
+      <option value="id-asc">ID ↑</option>
+      <option value="id-desc">ID ↓</option>
+      <option value="facade-asc">Facade Width ↑ 窄→宽</option>
+      <option value="facade-desc">Facade Width ↓ 宽→窄</option>
+    </select>
+  </div>
+  <div id="results"></div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+  <span class="close-hint">点击任意处关闭 ✕</span>
+  <img id="lightbox-img" src="">
+</div>
+
+<script>
+// ========================== DATA ==========================
+// ★ 把 Templater 导出的 JSON 内容粘贴替换这个数组 ★
+const elevations = [
+  {
+    "id": "A-001",
+    "status": "active",
+    "facade_width": 70,
+    "lot_width": 110,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear hide",
+    "revit_model": true,
+    "tags": [
+      "gable"
+    ],
+    "description": "John Staub’s old house ，Same Staub house but with a different way to get into the garage - we can do two versions， one for the garage and the other for only the main facade on narrower lot\n想办法做 attach garage，好处是下雨不淋雨，可以二楼连通起來，面积更大",
+    "images": [
+      "https://www.dropbox.com/scl/fi/j9c8wuehx4ksgaguelwdr/A-001a.png?rlkey=ux2j48525x093lzmahzjojv7v&st=7ukeclu4&raw=1",
+      "https://www.dropbox.com/scl/fi/cnr3iffxs28pqdu91ewph/A-001b.png?rlkey=jl094yv00n9bjsx9p07zqyec5&st=y6hkd70s&raw=1",
+      "https://www.dropbox.com/scl/fi/2m9faerhejb9w6jr4d5xq/A-001c.png?rlkey=iunl4mujp457wkdcfvxsfpae3&st=51q0prao&raw=1",
+      "https://www.dropbox.com/scl/fi/531ccncx1e8zxtb3hug2g/A-001d.png?rlkey=y1pvm4jqbpnnjethb3gzw84vf&st=iky046zc&raw=1"
+    ]
+  },
+  {
+    "id": "A-002",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": 110,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [],
+    "description": "LOVE this house on a wider lot and for it to set back a lot",
+    "images": [
+      "https://www.dropbox.com/scl/fi/xioyvqogmuw6icskr3ifj/A-002.png?rlkey=m3gnpewfv46wvc3kb6pk8wcvm&st=wcmkmyxo&raw=1"
+    ]
+  },
+  {
+    "id": "A-003",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "stone"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "gable"
+    ],
+    "description": "基本完美",
+    "images": [
+      "https://www.dropbox.com/scl/fi/3e5cme0fjuks9wl0716p9/A-003.png?rlkey=n06ayaaf55lxwxwxwd1n2oe7y&st=ytznow09&raw=1"
+    ]
+  },
+  {
+    "id": "A-004",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": true,
+    "tags": [
+      "symmetry",
+      "Portico"
+    ],
+    "description": "very nice, should do one at Celestine for sure\r\n喜欢对称，pediment稍微太大了，右边也可以只做一层",
+    "images": [
+      "https://www.dropbox.com/scl/fi/i3a893kzjbjjeva4wlj6z/A-004.png?rlkey=dess3lflo17l25nnyd1uqhchl&st=j87i7f1t&raw=1",
+      "https://www.dropbox.com/scl/fi/jzxi80vrc8dydk908507u/A-004a.png?rlkey=h6bg93emmnnwgn91v3aqo26ie&st=5ahr7y0u&raw=1"
+    ]
+  },
+  {
+    "id": "A-005",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "一层三个窗子，二层两个窗子，不完全对称也很好.Notice the wing is always lower than the main part",
+    "images": [
+      "https://www.dropbox.com/scl/fi/w9u5kmvrygjkjhxo11b35/A-005.png?rlkey=9boagbram6lx4x4fdxopvnsvb&st=596c0inb&raw=1"
+    ]
+  },
+  {
+    "id": "A-006",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "trellis"
+    ],
+    "description": "also good, but I would make the front porch more simple.  Please note these are all flat fronts, but adding a little detail like this will change the look",
+    "images": [
+      "https://www.dropbox.com/scl/fi/r69ptkwujiljm77vhvvl9/A-006.png?rlkey=hp0d8pp1z638ewy4ii19wkes5&st=fo5nd58e&raw=1"
+    ]
+  },
+  {
+    "id": "A-007",
+    "status": "active",
+    "facade_width": 75,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "front_door",
+      "Porch"
+    ],
+    "description": "front door很高大，porch也很高，很喜欢",
+    "images": [
+      "https://www.dropbox.com/scl/fi/06x1d6guap06f8li24za5/A-007.png?rlkey=ftquyn0isdq8r2un5sc13rpwv&st=g1dhv0c3&raw=1"
+    ]
+  },
+  {
+    "id": "A-008",
+    "status": "active",
+    "facade_width": 75,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "Lake Celestine",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": true,
+    "tags": [
+      "symmetry",
+      "gable"
+    ],
+    "description": "Celestine A plus  很喜欢",
+    "images": [
+      "https://www.dropbox.com/scl/fi/0ts6d4g9iodspiuxa96x2/A-008.png?rlkey=ech8h6lmtrgukcl2h7lxkgr7m&st=mdyutr7n&raw=1",
+      "https://www.dropbox.com/scl/fi/x4sm1vp6et27930edlghs/A-008a.png?rlkey=f29jqbutyy4ukpi0jru589pn9&st=ud3pqyxk&raw=1"
+    ]
+  },
+  {
+    "id": "A-009",
+    "status": "active",
+    "facade_width": 65,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "plant"
+    ],
+    "description": "good to repeat很喜欢，加绿植",
+    "images": [
+      "https://www.dropbox.com/scl/fi/sdrsb57fuf269t2hfmgki/A-009.png?rlkey=v7cgf39xfbu06pkr0sn59l68v&st=3ap7ha16&raw=1"
+    ]
+  },
+  {
+    "id": "A-010",
+    "status": "active",
+    "facade_width": 61,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": [
+      "Lake Celestine",
+      "solana hills"
+    ],
+    "project": [
+      "5309 Cherokee St"
+    ],
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "Good elevation for future use especially on large lots like Celestine and solana hills",
+    "images": [
+      "https://www.dropbox.com/scl/fi/02dl55qw9a7pyglokm3ke/A-010.png?rlkey=xct15t6br2i5jpwr4q283yze6&st=vycyuvku&raw=1"
+    ]
+  },
+  {
+    "id": "A-011",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "big_porch"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "Porch",
+      "Balcony"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/r3rfqxejb3ci3lk21yzb9/A-011.png?rlkey=6p0myzyafv2zvfxmap50biaak&st=ajk3uufb&raw=1"
+    ]
+  },
+  {
+    "id": "A-012",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": true,
+    "tags": [
+      "symmetry",
+      "gable"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/5u5hbkjzbwkqel00uxxiz/A-012.png?rlkey=r1t6w55gu62t4fu87ubc9thx6&st=wp1e1isf&raw=1",
+      "https://www.dropbox.com/scl/fi/9i9jd251ifz7erjhtf0dp/A-012a.png?rlkey=9h3lchkmlu9as7gwhqj4o94iq&st=ql4cbmi4&raw=1"
+    ]
+  }
+];
+
+// ========================== MULTI-SELECT COMPONENT ==========================
+const allMultiSelects = [];
+
+class MultiSelect {
+  constructor(containerId, options, placeholder) {
+    this.container = document.getElementById(containerId);
+    this.options = options;
+    this.selected = new Set();
+    this.placeholder = placeholder || '— 全部 —';
+    this.isOpen = false;
+    this.build();
+    allMultiSelects.push(this);
+  }
+
+  build() {
+    this.container.innerHTML = '';
+
+    // Trigger button
+    this.trigger = document.createElement('div');
+    this.trigger.className = 'ms-trigger';
+    this.trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggle();
+    });
+
+    // Dropdown panel
+    this.dropdown = document.createElement('div');
+    this.dropdown.className = 'ms-dropdown';
+    this.dropdown.addEventListener('click', e => e.stopPropagation());
+
+    this.checkboxes = [];
+    this.options.forEach(opt => {
+      const row = document.createElement('div');
+      row.className = 'ms-option';
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.id = `${this.container.id}--${opt}`;
+      cb.addEventListener('change', () => {
+        if (cb.checked) this.selected.add(opt);
+        else this.selected.delete(opt);
+        this.updateDisplay();
+        applyFilters();
+      });
+      this.checkboxes.push(cb);
+
+      const lbl = document.createElement('span');
+      lbl.textContent = opt;
+
+      row.appendChild(cb);
+      row.appendChild(lbl);
+
+      // Clicking the row toggles checkbox
+      row.addEventListener('click', (e) => {
+        if (e.target !== cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+      });
+
+      this.dropdown.appendChild(row);
+    });
+
+    this.container.appendChild(this.trigger);
+    this.container.appendChild(this.dropdown);
+    this.updateDisplay();
+  }
+
+  updateDisplay() {
+    this.trigger.innerHTML = '';
+    const pills = document.createElement('div');
+    pills.className = 'ms-pills';
+
+    if (this.selected.size === 0) {
+      const ph = document.createElement('span');
+      ph.className = 'ms-placeholder';
+      ph.textContent = this.placeholder;
+      pills.appendChild(ph);
+    } else {
+      this.selected.forEach(v => {
+        const pill = document.createElement('span');
+        pill.className = 'ms-pill';
+        pill.textContent = v;
+        pills.appendChild(pill);
+      });
+    }
+
+    const arrow = document.createElement('span');
+    arrow.className = 'ms-arrow';
+    arrow.textContent = '▼';
+    this.trigger.appendChild(pills);
+    this.trigger.appendChild(arrow);
+  }
+
+  toggle() {
+    this.isOpen = !this.isOpen;
+    this.container.classList.toggle('open', this.isOpen);
+    if (this.isOpen) {
+      allMultiSelects.forEach(m => { if (m !== this) m.close(); });
+    }
+  }
+
+  close() { this.isOpen = false; this.container.classList.remove('open'); }
+
+  getSelected() { return [...this.selected]; }
+
+  reset() {
+    this.selected.clear();
+    this.checkboxes.forEach(cb => cb.checked = false);
+    this.updateDisplay();
+  }
+}
+
+// Close all dropdowns on outside click
+document.addEventListener('click', () => allMultiSelects.forEach(m => m.close()));
+
+// ========================== INIT FILTERS ==========================
+function getUnique(key) {
+  const s = new Set();
+  elevations.forEach(e => {
+    const v = e[key];
+    if (Array.isArray(v)) v.forEach(x => { if(x) s.add(String(x)); });
+    else if (v != null && v !== '') s.add(String(v));
+  });
+  return [...s].sort();
+}
+function populateSelect(id, vals) {
+  const sel = document.getElementById(id);
+  vals.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; sel.appendChild(o); });
+}
+
+// ★ Multi-selects
+const msCommunity = new MultiSelect('ms-community', getUnique('community'), '— 全部 —');
+const msStory     = new MultiSelect('ms-story',     getUnique('story'),     '— 全部 —');
+const msMaterial  = new MultiSelect('ms-material',  getUnique('wall_material'), '— 全部 —');
+const msStyle     = new MultiSelect('ms-style',     getUnique('style'),     '— 全部 —');
+const msTags      = new MultiSelect('ms-tags',      getUnique('tags'),      '— 全部 —');
+
+// ★ Single selects
+populateSelect('f-project', getUnique('project'));
+populateSelect('f-entry',   getUnique('entry'));
+populateSelect('f-garage',  getUnique('garage'));
+
+// ========================== FILTER LOGIC ==========================
+function applyFilters() {
+  // Multi-select values
+  const selCommunity = msCommunity.getSelected();
+  const selStory     = msStory.getSelected();
+  const selMaterial  = msMaterial.getSelected();
+  const selStyle     = msStyle.getSelected();
+  const selTags      = msTags.getSelected();
+
+  // Single-select values
+  const project = document.getElementById('f-project').value;
+  const entry   = document.getElementById('f-entry').value;
+  const garage  = document.getElementById('f-garage').value;
+  const revit   = document.getElementById('f-revit').value;
+
+  // Range values
+  const fMin  = parseFloat(document.getElementById('facade-min').value) || null;
+  const fMax  = parseFloat(document.getElementById('facade-max').value) || null;
+  const lwMin = parseFloat(document.getElementById('lotw-min').value)   || null;
+  const lwMax = parseFloat(document.getElementById('lotw-max').value)   || null;
+
+  let filtered = elevations.filter(e => {
+    // Multi: community (OR — 匹配任一即可)
+    if (selCommunity.length && !selCommunity.includes(String(e.community||''))) return false;
+    // Multi: story
+    if (selStory.length && !selStory.includes(String(e.story||''))) return false;
+    // Multi: wall_material (OR — 数组中有任一匹配)
+    if (selMaterial.length && !(e.wall_material||[]).some(m => selMaterial.includes(m))) return false;
+    // Multi: style
+    if (selStyle.length && !(e.style||[]).some(s => selStyle.includes(s))) return false;
+    // Multi: tags
+    if (selTags.length && !(e.tags||[]).some(t => selTags.includes(t))) return false;
+
+    // Single selects
+    if (project && String(e.project||'') !== project) return false;
+    if (entry   && String(e.entry||'')   !== entry)   return false;
+    if (garage  && String(e.garage||'')  !== garage)  return false;
+    if (revit==='true'  && !e.revit_model) return false;
+    if (revit==='false' &&  e.revit_model) return false;
+
+    // Ranges
+    if (fMin  && (!e.facade_width || e.facade_width < fMin)) return false;
+    if (fMax  && (!e.facade_width || e.facade_width > fMax)) return false;
+    if (lwMin && (!e.lot_width    || e.lot_width < lwMin))   return false;
+    if (lwMax && (!e.lot_width    || e.lot_width > lwMax))   return false;
+    return true;
+  });
+
+  // Sort
+  const sort = document.getElementById('sort-select').value;
+  filtered.sort((a,b) => {
+    if (sort==='id-asc')      return (a.id||'').localeCompare(b.id||'');
+    if (sort==='id-desc')     return (b.id||'').localeCompare(a.id||'');
+    if (sort==='facade-asc')  return (a.facade_width||0)-(b.facade_width||0);
+    if (sort==='facade-desc') return (b.facade_width||0)-(a.facade_width||0);
+  });
+
+  render(filtered);
+}
+
+function resetFilters() {
+  allMultiSelects.forEach(ms => ms.reset());
+  document.querySelectorAll('.filter-panel select').forEach(s => s.value='');
+  document.querySelectorAll('.filter-panel input[type="number"]').forEach(i => i.value='');
+  document.getElementById('sort-select').value = 'id-asc';
+  applyFilters();
+}
+
+// ========================== RENDER ==========================
+function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+function render(data) {
+  document.getElementById('results-count').innerHTML =
+    '📋 共找到 <strong>'+data.length+'</strong> 条结果（共 '+elevations.length+' 条）';
+
+  if (!data.length) {
+    document.getElementById('results').innerHTML =
+      '<div class="no-results">😔 没有找到匹配的立面<br>请调整筛选条件</div>';
+    return;
+  }
+
+  document.getElementById('results').innerHTML = data.map(e => {
+    const t = [];
+    if (e.facade_width) t.push('<span class="tag tag-size">🏠 Facade: '+e.facade_width+"'</span>");
+    if (e.lot_width)    t.push('<span class="tag tag-size">📐 Lot W: '+e.lot_width+"'</span>");
+    if (e.lot_depth)    t.push('<span class="tag tag-size">📐 Lot D: '+e.lot_depth+"'</span>");
+    if (e.story)        t.push('<span class="tag tag-story">🏢 '+esc(e.story)+' Story</span>');
+    if (e.community)    t.push('<span class="tag tag-community">📍 '+esc(e.community)+'</span>');
+    if (e.wall_material && e.wall_material.length)
+      t.push('<span class="tag tag-material">🧱 '+esc(e.wall_material.join(', '))+'</span>');
+    if (e.style && e.style.length)
+      t.push('<span class="tag tag-style">🎨 '+esc(e.style.join(', '))+'</span>');
+    if (e.project)
+      t.push('<span class="tag tag-project">🏗️ '+esc(Array.isArray(e.project)?e.project.join(', '):e.project)+'</span>');
+    if (e.entry)  t.push('<span class="tag tag-entry">🚪 '+esc(e.entry)+'</span>');
+    if (e.garage) t.push('<span class="tag tag-garage">🚗 '+esc(e.garage)+'</span>');
+    if (e.tags && e.tags.length)
+      t.push('<span class="tag tag-tags">🏷️ '+esc(e.tags.join(', '))+'</span>');
+    if (e.revit_model) t.push('<span class="tag tag-revit">✅ Revit Model</span>');
+
+    const desc = e.description ? '<div class="card-desc">'+esc(e.description)+'</div>' : '';
+    const imgs = (e.images&&e.images.length) ?
+      '<div class="card-images">'+e.images.map((u,i) =>
+        '<img src="'+u+'" alt="'+esc(e.id)+' #'+(i+1)+'" onclick="openLB(this.src);event.stopPropagation();" loading="lazy">'
+      ).join('')+'</div>' : '';
+
+    return '<div class="card"><div class="card-title">'+esc(e.id)+'</div>'+
+      '<div class="card-meta">'+t.join('')+'</div>'+desc+imgs+'</div>';
+  }).join('');
+}
+
+function openLB(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.add('active');
+}
+
+// ========================== EVENTS ==========================
+document.querySelectorAll('.filter-panel select, .filter-panel input[type="number"]')
+  .forEach(el => { el.addEventListener('change', applyFilters); el.addEventListener('input', applyFilters); });
+
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') {
+    document.getElementById('lightbox').classList.remove('active');
+    allMultiSelects.forEach(m => m.close());
+  }
+});
+
+applyFilters();
+</script>
+</body>
+</html>

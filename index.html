@@ -270,1107 +270,1805 @@ h1 { text-align: center; color: #5b21b6; margin-bottom: 24px; font-size: 1.8em; 
 // ========================== DATA ==========================
 // ★ 把 Templater 导出的 JSON 内容粘贴替换这个数组 ★
 const elevations = [
-
-{
-
-"id": "A-001",
-
-"status": "active",
-
-"facade_width": 70,
-
-"lot_width": 110,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick",
-
-"siding"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "rear",
-
-"revit_model": true,
-
-"tags": [
-
-"gable"
-
-],
-
-"description": "John Staub’s old house ，Same Staub house but with a different way to get into the garage - we can do two versions， one for the garage and the other for only the main facade on narrower lot\n想办法做 attach garage，好处是下雨不淋雨，可以二楼连通起來，面积更大",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/j9c8wuehx4ksgaguelwdr/A-001a.png?rlkey=ux2j48525x093lzmahzjojv7v&st=7ukeclu4&raw=1",
-
-"https://www.dropbox.com/scl/fi/cnr3iffxs28pqdu91ewph/A-001b.png?rlkey=jl094yv00n9bjsx9p07zqyec5&st=y6hkd70s&raw=1",
-
-]
-
-},
-
-{
-
-"id": "A-002",
-
-"status": "active",
-
-"facade_width": 50,
-
-"lot_width": 110,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"siding"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [],
-
-"description": "LOVE this house on a wider lot and for it to set back a lot",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/xioyvqogmuw6icskr3ifj/A-002.png?rlkey=m3gnpewfv46wvc3kb6pk8wcvm&st=wcmkmyxo&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-003",
-
-"status": "active",
-
-"facade_width": 80,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick",
-
-"stone"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"gable"
-
-],
-
-"description": "基本完美",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/3e5cme0fjuks9wl0716p9/A-003.png?rlkey=n06ayaaf55lxwxwxwd1n2oe7y&st=ytznow09&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-004",
-
-"status": "active",
-
-"facade_width": 80,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional",
-
-"colonial"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "rear",
-
-"revit_model": true,
-
-"tags": [
-
-"symmetry",
-
-"carport"
-
-],
-
-"description": "very nice, should do one at Celestine for sure\r\n喜欢对称，pediment稍微太大了，右边也可以只做一层",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/i3a893kzjbjjeva4wlj6z/A-004.png?rlkey=dess3lflo17l25nnyd1uqhchl&st=j87i7f1t&raw=1",
-
-]
-
-},
-
-{
-
-"id": "A-005",
-
-"status": "active",
-
-"facade_width": 80,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"stucco"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"#symmetry"
-
-],
-
-"description": "一层三个窗子，二层两个窗子，不完全对称也很好.Notice the wing is always lower than the main part",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/w9u5kmvrygjkjhxo11b35/A-005.png?rlkey=9boagbram6lx4x4fdxopvnsvb&st=596c0inb&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-006",
-
-"status": "active",
-
-"facade_width": 80,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"#symmetry",
-
-"#trellis"
-
-],
-
-"description": "also good, but I would make the front porch more simple.  Please note these are all flat fronts, but adding a little detail like this will change the look",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/r69ptkwujiljm77vhvvl9/A-006.png?rlkey=hp0d8pp1z638ewy4ii19wkes5&st=fo5nd58e&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-007",
-
-"status": "active",
-
-"facade_width": 75,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"front_door",
-
-"Porch"
-
-],
-
-"description": "front door很高大，porch也很高，很喜欢",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/06x1d6guap06f8li24za5/A-007.png?rlkey=ftquyn0isdq8r2un5sc13rpwv&st=g1dhv0c3&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-008",
-
-"status": "active",
-
-"facade_width": 75,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "Lake Celestine",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": true,
-
-"tags": [
-
-"symmetry",
-
-"gable"
-
-],
-
-"description": "Celestine A plus  很喜欢",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/0ts6d4g9iodspiuxa96x2/A-008.png?rlkey=ech8h6lmtrgukcl2h7lxkgr7m&st=mdyutr7n&raw=1",
-
-]
-
-},
-
-{
-
-"id": "A-009",
-
-"status": "active",
-
-"facade_width": 65,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"siding"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"plant"
-
-],
-
-"description": "good to repeat很喜欢，加绿植",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/sdrsb57fuf269t2hfmgki/A-009.png?rlkey=v7cgf39xfbu06pkr0sn59l68v&st=3ap7ha16&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-010",
-
-"status": "active",
-
-"facade_width": 61,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional",
-
-"colonial"
-
-],
-
-"story": "2",
-
-"community": [
-
-"Lake Celestine",
-
-"solana hills"
-
-],
-
-"project": [
-
-"5309 Cherokee St"
-
-],
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"symmetry"
-
-],
-
-"description": "Good elevation for future use especially on large lots like Celestine and solana hills",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/02dl55qw9a7pyglokm3ke/A-010.png?rlkey=xct15t6br2i5jpwr4q283yze6&st=vycyuvku&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-011",
-
-"status": "active",
-
-"facade_width": 60,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional",
-
-"Southern colonial"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "rear",
-
-"revit_model": false,
-
-"tags": [
-
-"Porch",
-
-"Balcony",
-
-"Dormer"
-
-],
-
-"description": "",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/r3rfqxejb3ci3lk21yzb9/A-011.png?rlkey=6p0myzyafv2zvfxmap50biaak&st=ajk3uufb&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-012",
-
-"status": "active",
-
-"facade_width": 60,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional",
-
-"colonial"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": true,
-
-"tags": [
-
-"symmetry",
-
-"gable"
-
-],
-
-"description": "",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/5u5hbkjzbwkqel00uxxiz/A-012.png?rlkey=r1t6w55gu62t4fu87ubc9thx6&st=wp1e1isf&raw=1",
-
-]
-
-},
-
-{
-
-"id": "A-013",
-
-"status": "active",
-
-"facade_width": 60,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional",
-
-"colonial"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"symmetry",
-
-"shape",
-
-"Dormer"
-
-],
-
-"description": "I like the shape of this, it is not a perfect even front like the first picture.  This is also very good\r\npitch可以大点，roof高点可能又不一样",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/21heqi0nrls6ifs9q1uij/A-013.png?rlkey=apwihx73v33cvtivkak8u69ui&st=8ihrebfq&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-014",
-
-"status": "active",
-
-"facade_width": 60,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"symmetry",
-
-"metal_column",
-
-"Porch"
-
-],
-
-"description": "824 Country Lane\n喜欢铁艺的柱子,porch可以多点overhang",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/7ace20ge21l0pi0uhntpr/A-014.png?rlkey=s1bgiti614e8r5yb23h3h1aqf&st=246u3ed0&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-015",
-
-"status": "active",
-
-"facade_width": 60,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"stucco"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": [
-
-"Verone"
-
-],
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"symmetry"
-
-],
-
-"description": "Maybe we can do this at Verone, We should do this with all the different floor plans \nfront door 的trim显得不同，两边的trim宽一点可能更好看",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/4lq3zl5xslzaogedhnouc/A-015.png?rlkey=8kfyxc4r80vcxru0cioryu2nj&st=v57i4vy2&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-016",
-
-"status": "active",
-
-"facade_width": 53,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "side",
-
-"revit_model": true,
-
-"tags": [
-
-"banding",
-
-"corner"
-
-],
-
-"description": "看上去对称，其实不对称，很舒服，喜欢这种banding不希望做stucoo全部做brick",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/mm6yb9zmpjf6fhy6tbvcc/A-016.png?rlkey=41kll7xev7uxxb0lcsgxgmher&st=jjrukw4r&raw=1",
-
-]
-
-},
-
-{
-
-"id": "A-017",
-
-"status": "active",
-
-"facade_width": 50,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"stucco",
-
-"siding"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"gable",
-
-"shape"
-
-],
-
-"description": "去掉右边完美",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/5kr7x46wdnvwvlvfdzg0y/A-017.png?rlkey=z10dq08b0fbx0d9edr8zp71pp&st=tcwoh9bv&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-018",
-
-"status": "active",
-
-"facade_width": 50,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"steps",
-
-"symmetry"
-
-],
-
-"description": "喜欢台阶上去",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/cly7bzjqs4c8g9m3vz008/A-018.png?rlkey=jhxnqwn0t2hvhayt64vosy0bg&st=lhba7dq1&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-019",
-
-"status": "active",
-
-"facade_width": 50,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"symmetry",
-
-"Dormer",
-
-"cornice"
-
-],
-
-"description": "dormer的gable太窄了，做宽一點，注意cornice detail",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/an2znjpph77p29we02w76/A-019.png?rlkey=1cjgwyf3xf6eaq0hmz0ac3yqb&st=9ppadp5s&raw=1"
-
-]
-
-},
-
-{
-
-"id": "A-020",
-
-"status": "active",
-
-"facade_width": 50,
-
-"lot_width": null,
-
-"lot_depth": null,
-
-"wall_material": [
-
-"brick"
-
-],
-
-"style": [
-
-"traditional"
-
-],
-
-"story": "2",
-
-"community": "",
-
-"project": "",
-
-"entry": "front",
-
-"garage": "",
-
-"revit_model": false,
-
-"tags": [
-
-"symmetry"
-
-],
-
-"description": "This is almost perfect",
-
-"images": [
-
-"https://www.dropbox.com/scl/fi/yu6bucree8v6gdd3kjt5x/A-020.png?rlkey=iq8ucfpjkfuehntj7m9ltc4xs&st=vezpqbdq&raw=1"
-
-]
-
-}
-
+  {
+    "id": "A-001",
+    "status": "active",
+    "facade_width": 70,
+    "lot_width": 110,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": true,
+    "tags": [
+      "gable"
+    ],
+    "description": "John Staub’s old house ，Same Staub house but with a different way to get into the garage - we can do two versions， one for the garage and the other for only the main facade on narrower lot\n想办法做 attach garage，好处是下雨不淋雨，可以二楼连通起來，面积更大",
+    "images": [
+      "https://www.dropbox.com/scl/fi/j9c8wuehx4ksgaguelwdr/A-001a.png?rlkey=ux2j48525x093lzmahzjojv7v&st=7ukeclu4&raw=1",
+      "https://www.dropbox.com/scl/fi/cnr3iffxs28pqdu91ewph/A-001b.png?rlkey=jl094yv00n9bjsx9p07zqyec5&st=y6hkd70s&raw=1",
+      "https://www.dropbox.com/scl/fi/2m9faerhejb9w6jr4d5xq/A-001c.png?rlkey=iunl4mujp457wkdcfvxsfpae3&st=51q0prao&raw=1",
+      "https://www.dropbox.com/scl/fi/531ccncx1e8zxtb3hug2g/A-001d.png?rlkey=y1pvm4jqbpnnjethb3gzw84vf&st=iky046zc&raw=1"
+    ]
+  },
+  {
+    "id": "A-002",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": 110,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "LOVE this house on a wider lot and for it to set back a lot",
+    "images": [
+      "https://www.dropbox.com/scl/fi/xioyvqogmuw6icskr3ifj/A-002.png?rlkey=m3gnpewfv46wvc3kb6pk8wcvm&st=wcmkmyxo&raw=1"
+    ]
+  },
+  {
+    "id": "A-003",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "stone"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "gable",
+      "shape"
+    ],
+    "description": "基本完美",
+    "images": [
+      "https://www.dropbox.com/scl/fi/3e5cme0fjuks9wl0716p9/A-003.png?rlkey=n06ayaaf55lxwxwxwd1n2oe7y&st=ytznow09&raw=1"
+    ]
+  },
+  {
+    "id": "A-004",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": true,
+    "tags": [
+      "symmetry",
+      "porte_cochere"
+    ],
+    "description": "very nice, should do one at Celestine for sure\r\n喜欢对称，pediment稍微太大了，右边也可以只做一层",
+    "images": [
+      "https://www.dropbox.com/scl/fi/i3a893kzjbjjeva4wlj6z/A-004.png?rlkey=dess3lflo17l25nnyd1uqhchl&st=j87i7f1t&raw=1",
+      "https://www.dropbox.com/scl/fi/jzxi80vrc8dydk908507u/A-004a.png?rlkey=h6bg93emmnnwgn91v3aqo26ie&st=5ahr7y0u&raw=1"
+    ]
+  },
+  {
+    "id": "A-005",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "一层三个窗子，二层两个窗子，不完全对称也很好.Notice the wing is always lower than the main part",
+    "images": [
+      "https://www.dropbox.com/scl/fi/w9u5kmvrygjkjhxo11b35/A-005.png?rlkey=9boagbram6lx4x4fdxopvnsvb&st=596c0inb&raw=1"
+    ]
+  },
+  {
+    "id": "A-006",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "trellis",
+      "elevation_flat"
+    ],
+    "description": "also good, but I would make the front porch more simple.  Please note these are all flat fronts, but adding a little detail like this will change the look",
+    "images": [
+      "https://www.dropbox.com/scl/fi/r69ptkwujiljm77vhvvl9/A-006.png?rlkey=hp0d8pp1z638ewy4ii19wkes5&st=fo5nd58e&raw=1"
+    ]
+  },
+  {
+    "id": "A-007",
+    "status": "active",
+    "facade_width": 75,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "front_door",
+      "Porch"
+    ],
+    "description": "front door很高大，porch也很高，很喜欢",
+    "images": [
+      "https://www.dropbox.com/scl/fi/06x1d6guap06f8li24za5/A-007.png?rlkey=ftquyn0isdq8r2un5sc13rpwv&st=g1dhv0c3&raw=1"
+    ]
+  },
+  {
+    "id": "A-008",
+    "status": "active",
+    "facade_width": 75,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "Lake Celestine",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": true,
+    "tags": [
+      "symmetry",
+      "gable"
+    ],
+    "description": "Celestine A plus  很喜欢",
+    "images": [
+      "https://www.dropbox.com/scl/fi/0ts6d4g9iodspiuxa96x2/A-008.png?rlkey=ech8h6lmtrgukcl2h7lxkgr7m&st=mdyutr7n&raw=1",
+      "https://www.dropbox.com/scl/fi/x4sm1vp6et27930edlghs/A-008a.png?rlkey=f29jqbutyy4ukpi0jru589pn9&st=ud3pqyxk&raw=1"
+    ]
+  },
+  {
+    "id": "A-009",
+    "status": "active",
+    "facade_width": 65,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "plant"
+    ],
+    "description": "good to repeat很喜欢，加绿植",
+    "images": [
+      "https://www.dropbox.com/scl/fi/sdrsb57fuf269t2hfmgki/A-009.png?rlkey=v7cgf39xfbu06pkr0sn59l68v&st=3ap7ha16&raw=1"
+    ]
+  },
+  {
+    "id": "A-010",
+    "status": "active",
+    "facade_width": 61,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional",
+      "colonial"
+    ],
+    "story": "2",
+    "community": [
+      "Lake Celestine",
+      "solana hills"
+    ],
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "Good elevation for future use especially on large lots like Celestine and solana hills",
+    "images": [
+      "https://www.dropbox.com/scl/fi/02dl55qw9a7pyglokm3ke/A-010.png?rlkey=xct15t6br2i5jpwr4q283yze6&st=vycyuvku&raw=1"
+    ]
+  },
+  {
+    "id": "A-011",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional",
+      "Southern colonial"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "Porch",
+      "Balcony",
+      "Dormer"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/r3rfqxejb3ci3lk21yzb9/A-011.png?rlkey=6p0myzyafv2zvfxmap50biaak&st=ajk3uufb&raw=1"
+    ]
+  },
+  {
+    "id": "A-012",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional",
+      "colonial"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": true,
+    "tags": [
+      "symmetry",
+      "gable"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/5u5hbkjzbwkqel00uxxiz/A-012.png?rlkey=r1t6w55gu62t4fu87ubc9thx6&st=wp1e1isf&raw=1",
+      "https://www.dropbox.com/scl/fi/9i9jd251ifz7erjhtf0dp/A-012a.png?rlkey=9h3lchkmlu9as7gwhqj4o94iq&st=ql4cbmi4&raw=1"
+    ]
+  },
+  {
+    "id": "A-013",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional",
+      "colonial"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "shape",
+      "Dormer"
+    ],
+    "description": "I like the shape of this, it is not a perfect even front like the first picture.  This is also very good\r\npitch可以大点，roof高点可能又不一样",
+    "images": [
+      "https://www.dropbox.com/scl/fi/21heqi0nrls6ifs9q1uij/A-013.png?rlkey=apwihx73v33cvtivkak8u69ui&st=8ihrebfq&raw=1"
+    ]
+  },
+  {
+    "id": "A-014",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "metal_column",
+      "Porch"
+    ],
+    "description": "喜欢铁艺的柱子,porch可以多点overhang",
+    "images": [
+      "https://www.dropbox.com/scl/fi/7ace20ge21l0pi0uhntpr/A-014.png?rlkey=s1bgiti614e8r5yb23h3h1aqf&st=246u3ed0&raw=1"
+    ]
+  },
+  {
+    "id": "A-015",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": [
+      "Verone"
+    ],
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "Maybe we can do this at Verone, We should do this with all the different floor plans \nfront door 的trim显得不同，两边的trim宽一点可能更好看",
+    "images": [
+      "https://www.dropbox.com/scl/fi/4lq3zl5xslzaogedhnouc/A-015.png?rlkey=8kfyxc4r80vcxru0cioryu2nj&st=v57i4vy2&raw=1"
+    ]
+  },
+  {
+    "id": "A-016",
+    "status": "active",
+    "facade_width": 53,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "side",
+    "revit_model": true,
+    "tags": [
+      "banding",
+      "corner"
+    ],
+    "description": "看上去对称，其实不对称，很舒服，喜欢这种banding不希望做stucoo全部做brick",
+    "images": [
+      "https://www.dropbox.com/scl/fi/mm6yb9zmpjf6fhy6tbvcc/A-016.png?rlkey=41kll7xev7uxxb0lcsgxgmher&st=jjrukw4r&raw=1",
+      "https://www.dropbox.com/scl/fi/326fbtnt9q0jy1j8ya24c/A-016a.png?rlkey=1q1ex250u3h69kd8g8753zfby&st=05e2zqyy&raw=1",
+      "https://www.dropbox.com/scl/fi/z7mkz48mj457oj579ii6m/A-016b.png?rlkey=byfn3uljut4ezflamgjqtdn6w&st=y57kk7cb&raw=1"
+    ]
+  },
+  {
+    "id": "A-017",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco",
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "gable",
+      "shape"
+    ],
+    "description": "去掉右边完美",
+    "images": [
+      "https://www.dropbox.com/scl/fi/5kr7x46wdnvwvlvfdzg0y/A-017.png?rlkey=z10dq08b0fbx0d9edr8zp71pp&st=tcwoh9bv&raw=1"
+    ]
+  },
+  {
+    "id": "A-018",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "steps",
+      "symmetry"
+    ],
+    "description": "喜欢台阶上去",
+    "images": [
+      "https://www.dropbox.com/scl/fi/cly7bzjqs4c8g9m3vz008/A-018.png?rlkey=jhxnqwn0t2hvhayt64vosy0bg&st=lhba7dq1&raw=1"
+    ]
+  },
+  {
+    "id": "A-019",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "Dormer",
+      "cornice"
+    ],
+    "description": "dormer的gable太窄了，做宽一點，注意cornice detail",
+    "images": [
+      "https://www.dropbox.com/scl/fi/an2znjpph77p29we02w76/A-019.png?rlkey=1cjgwyf3xf6eaq0hmz0ac3yqb&st=9ppadp5s&raw=1"
+    ]
+  },
+  {
+    "id": "A-020",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "This is almost perfect",
+    "images": [
+      "https://www.dropbox.com/scl/fi/yu6bucree8v6gdd3kjt5x/A-020.png?rlkey=iq8ucfpjkfuehntj7m9ltc4xs&st=vezpqbdq&raw=1"
+    ]
+  },
+  {
+    "id": "A-021",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "front",
+    "revit_model": true,
+    "tags": [
+      "symmetry",
+      "gable"
+    ],
+    "description": "main part of the house is good, expect the front pediment is too light and I do not want to see the little roof\nporch recess最多3'6”， key stone可以尝试",
+    "images": [
+      "https://www.dropbox.com/scl/fi/nur9fzy9xhdmnlwa4f21y/A-021.png?rlkey=y0oqes9isvuh9gbm330b46fxp&st=a0q0raj8&raw=1",
+      "https://www.dropbox.com/scl/fi/mdbjh57jxx9mm9bzvg54h/A-021a.png?rlkey=6x9njmirhvm0lglw9dwvsx84q&st=lm33xpy0&raw=1"
+    ]
+  },
+  {
+    "id": "A-022",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "Dormer"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/ejoro0wc74o82im2u3ewc/A-022.png?rlkey=9pzwwxl1767oni1ykpuibbz73&st=ielt6438&raw=1"
+    ]
+  },
+  {
+    "id": "A-023",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "different_plate",
+      "Dormer",
+      "front_yard"
+    ],
+    "description": "喜欢最左侧的院墙，左边一层半可以更高一点，dormer太大了，把band提高。",
+    "images": [
+      "https://www.dropbox.com/scl/fi/22ae2v8jvsmc8v0qtlfer/A-023.png?rlkey=du45pqugl57qwf01d8t3nzdxm&st=dqobqtnm&raw=1",
+      "https://www.dropbox.com/scl/fi/69bic3pf2nww6mq50q3l8/A-023a.png?rlkey=16gifd694mlx01ovsqhn3q2px&st=syxr0y8f&raw=1"
+    ]
+  },
+  {
+    "id": "A-024",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": true,
+    "tags": [
+      "recess",
+      "front_yard",
+      "shutter"
+    ],
+    "description": "perfect! Can be done in siding\r\n左边recess变得不同，也可以recess更多，做一个侧前院+gate  二层shutter无效保护",
+    "images": [
+      "https://www.dropbox.com/scl/fi/r1id8orjzege11s4u603y/A-024.png?rlkey=xhh3regxqk89qnlxf14smmvas&st=ezmly6kn&raw=1",
+      "https://www.dropbox.com/scl/fi/04lg3ynhngacnxmckb536/A-024a.png?rlkey=y0d5yuws8hp8w1be5ianltzh6&st=a83dvkal&raw=1"
+    ]
+  },
+  {
+    "id": "A-025",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "side",
+    "revit_model": false,
+    "tags": [
+      "gable",
+      "shutter",
+      "hide_garage"
+    ],
+    "description": "Like this house, we built this in 1998.   The pediment could be a little better.\nporch可以宽一点，shutter无效保护，加wing wall挡一下车库",
+    "images": [
+      "https://www.dropbox.com/scl/fi/ds5qs1x2nlfrd67lyuyek/A-025.png?rlkey=nt7dljftysjcy1f32dzfdmfs7&st=kggi7dmw&raw=1",
+      "https://www.dropbox.com/scl/fi/tl8imccu1tq0ivqjnkrcb/A-025a.png?rlkey=j9fslrm8um41i6tbhm5g7yglw&st=vw3gwlmz&raw=1",
+      "https://www.dropbox.com/scl/fi/j6wi6n9dsutrhh1m4jbqs/A-025b.png?rlkey=fi7321m0cdsg0qfn6yji5c6mz&st=c0xtac6d&raw=1"
+    ]
+  },
+  {
+    "id": "A-026",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "gable",
+      "Bay_window"
+    ],
+    "description": "bay一般是木头做的，中间gable的窗子可以大一点",
+    "images": [
+      "https://www.dropbox.com/scl/fi/tv4ts0lao6kapalgfhlrb/A-026.png?rlkey=5hgalkunqs72mfk7zowdx5508&st=jgyb1r9q&raw=1"
+    ]
+  },
+  {
+    "id": "A-027",
+    "status": "active",
+    "facade_width": 42,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick",
+      "metal siding"
+    ],
+    "style": [],
+    "story": "2.5",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Porch",
+      "Chimney"
+    ],
+    "description": "porch可以做flat roof，烟囱改变造型",
+    "images": [
+      "https://www.dropbox.com/scl/fi/t2953iezrnanr99cjbt0q/A-027.png?rlkey=njbj9nl6uyebx3nnmzihj9jx9&st=8ojut3pf&raw=1"
+    ]
+  },
+  {
+    "id": "A-028",
+    "status": "active",
+    "facade_width": 40,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "Charleston"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "side_yard",
+      "side_balcony"
+    ],
+    "description": "Charleston house is a house with door to the side and has a nice size side courtyard,Windows are ok instead of French doors\r\ndormer可以做得更好,overhang太大",
+    "images": [
+      "https://www.dropbox.com/scl/fi/mzufz4oqaeorsip15c0jm/A-028.png?rlkey=xetmm7d08d9ccudtl417upwz7&st=3dv45tw9&raw=1"
+    ]
+  },
+  {
+    "id": "A-029",
+    "status": "active",
+    "facade_width": 40,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "Charleston"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Parapet",
+      "side_yard"
+    ],
+    "description": "左侧装饰好看，parapet wall造型上面的线条可以多一点",
+    "images": [
+      "https://www.dropbox.com/scl/fi/kjunmsc2tz4zvudq77lu7/A-029.png?rlkey=lailtt93idaojb95jt9zsjmp6&st=uhh77gj6&raw=1"
+    ]
+  },
+  {
+    "id": "A-030",
+    "status": "active",
+    "facade_width": 36,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "Dormer"
+    ],
+    "description": "column太细",
+    "images": [
+      "https://www.dropbox.com/scl/fi/mdacigbsc3ef2lhyei97z/A-030.png?rlkey=2buu03bigvst06pr2cewb7xom&st=ww1aenbp&raw=1"
+    ]
+  },
+  {
+    "id": "A-031",
+    "status": "active",
+    "facade_width": 35,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "Modern Southern"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Porch",
+      "gable"
+    ],
+    "description": "vent可以变小一些",
+    "images": [
+      "https://www.dropbox.com/scl/fi/ys2b2xodrjrp8vzplj8l6/A-031.png?rlkey=twygfux40a0nk0go2r2jouv98&st=o9z4rhtm&raw=1"
+    ]
+  },
+  {
+    "id": "A-032",
+    "status": "active",
+    "facade_width": 35,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "townhouse"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "No need to copy 100 Percent but there are essential elements that I like about each of the homes \nporch又高又细不好看，可以把porch变宽或者不要porch",
+    "images": [
+      "https://www.dropbox.com/scl/fi/r9lhxwpdbxoi9b611khc5/A-032.png?rlkey=jho30ynct7nxpek080ouxcjt5&st=qiedmgw4&raw=1"
+    ]
+  },
+  {
+    "id": "A-033",
+    "status": "active",
+    "facade_width": 22,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding",
+      "brick"
+    ],
+    "style": [
+      "townhouse"
+    ],
+    "story": "3",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "balcony"
+    ],
+    "description": "喜欢第一个balcony凸出去，一层加高更好看。不喜欢第三个立面",
+    "images": [
+      "https://www.dropbox.com/scl/fi/05wmg69ic7ndkfp3tq3qm/A-033.png?rlkey=1h9xlyskxxgyoprab31u6duxu&st=sd6rhpy4&raw=1"
+    ]
+  },
+  {
+    "id": "A-034",
+    "status": "active",
+    "facade_width": 55,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "Modern Southern"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Porch",
+      "Balcony"
+    ],
+    "description": "sunroom很貴，二层可以做french door出来做个deck",
+    "images": [
+      "https://www.dropbox.com/scl/fi/nrp1mxscko01oz3wnrnfh/A-034.png?rlkey=7fxbdgip1im0ghe58sg5ocpah&st=8uyj6l0g&raw=1"
+    ]
+  },
+  {
+    "id": "A-035",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "Porch",
+      "shape",
+      "Chimney",
+      "corner_lot"
+    ],
+    "description": "假的chimney很好。front door可以根据平面需要做不同的位置",
+    "images": [
+      "https://www.dropbox.com/scl/fi/isl3e2v7fncst1p4zw436/A-035.png?rlkey=f53km794098h7nghj0mah7g2u&st=5pzex2rv&raw=1"
+    ]
+  },
+  {
+    "id": "A-036",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "shape",
+      "Chimney",
+      "corner_lot",
+      "pitch_change"
+    ],
+    "description": "Love this and like the shape, but we can do better\n不同的chimney cap，喜欢pitch change",
+    "images": [
+      "https://www.dropbox.com/scl/fi/sa1fbwqaz7vvupfdfebph/A-036.png?rlkey=qab8q6koirlt8p3swek930i4e&st=sbzzuasc&raw=1"
+    ]
+  },
+  {
+    "id": "A-037",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Chimney",
+      "corner_lot",
+      "Porch"
+    ],
+    "description": "很漂亮，但柱子太多太貴了，烟囱可以做造型",
+    "images": [
+      "https://www.dropbox.com/scl/fi/vtjwis147fwxro6rrjfs2/A-037.png?rlkey=vd0c6iez69unyzj6g2sfocowp&st=v5kmjp87&raw=1"
+    ]
+  },
+  {
+    "id": "A-038",
+    "status": "active",
+    "facade_width": 30,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [],
+    "story": "1.5",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Porch",
+      "flat_roof"
+    ],
+    "description": "Love to do this at the next busy corners or street facing Kolbe, Crosby fronting at Carrollton, Eastwood, lake pointe\n可以照抄，喜欢一层的flat roof，一楼很高，阳光充足。",
+    "images": [
+      "https://www.dropbox.com/scl/fi/xa7jjscgq4tv69awzx6kn/A-038.png?rlkey=tswskuufe4iw6jsopew4gcxsu&st=l3yp9f2l&raw=1"
+    ]
+  },
+  {
+    "id": "A-039",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "different_plate"
+    ],
+    "description": "有二层，有tower的三层，高度有变化",
+    "images": [
+      "https://www.dropbox.com/scl/fi/8deeegacntecog70968a4/A-039.png?rlkey=t4otz534zy6c319b0w9u3297p&st=5a7hmsq8&raw=1"
+    ]
+  },
+  {
+    "id": "A-040",
+    "status": "active",
+    "facade_width": 65,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Porch",
+      "porte_cochere"
+    ],
+    "description": "L型的porch，主roof可以调高",
+    "images": [
+      "https://www.dropbox.com/scl/fi/hnsf60n2haklfui9upieo/A-040.png?rlkey=7jq002wdlftyvv04yv7jehybi&st=0t4vsskq&raw=1"
+    ]
+  },
+  {
+    "id": "A-041",
+    "status": "active",
+    "facade_width": 60,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Porch",
+      "Bay_window"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/85k07frh5i1bp8tlpf3jl/A-041.png?rlkey=mnbt27ac5c9y4jlgdffr3l0wd&st=oo4f4ufm&raw=1"
+    ]
+  },
+  {
+    "id": "A-042",
+    "status": "active",
+    "facade_width": 47,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [],
+    "story": "2",
+    "community": [
+      "RAVENNA"
+    ],
+    "project": [
+      "7503 Viano Lane"
+    ],
+    "entry": "front",
+    "garage": "rear",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Porch",
+      "side_yard",
+      "Chimney"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/x21xx37bym4676cu5xzjh/A-042.png?rlkey=nkddlvd2d6q4jexujbygw18cx&st=7slqltt1&raw=1"
+    ]
+  },
+  {
+    "id": "A-043",
+    "status": "active",
+    "facade_width": 45,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "Modern Southern"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Porch",
+      "side_yard",
+      "Chimney"
+    ],
+    "description": "façade&flat bay window\nL型porch不一樣但是贵，bay window不太一样，柱子太多，chinmey需要改变造型，shutter太多，房子加高可能更好看",
+    "images": [
+      "https://www.dropbox.com/scl/fi/d9qcz112vwcv352jze6uf/A-043.png?rlkey=v6nxrh8tngm9poipowzyg9vwg&st=itw0pdgd&raw=1"
+    ]
+  },
+  {
+    "id": "A-044",
+    "status": "active",
+    "facade_width": 35,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "Modern Southern"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Chimney",
+      "Porch",
+      "Balcony"
+    ],
+    "description": "烟囱很好看,porch+balcony也很好",
+    "images": [
+      "https://www.dropbox.com/scl/fi/z97gyhdp64e2ie2xakxcl/A-044.png?rlkey=9a4sc8qxytpms0tbtvllp07jm&st=b7g7fu34&raw=1"
+    ]
+  },
+  {
+    "id": "A-045",
+    "status": "active",
+    "facade_width": 35,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "Modern Southern"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Dormer",
+      "Porch"
+    ],
+    "description": "柱子太多了，可以不要右边转过来的porch，\n喜欢3个分开的dormer",
+    "images": [
+      "https://www.dropbox.com/scl/fi/o57ehvhuel9z4t25eqlpm/A-045.png?rlkey=7tn6v2snq571b4dn631vzzk9z&st=2nfi6x3d&raw=1"
+    ]
+  },
+  {
+    "id": "A-046",
+    "status": "active",
+    "facade_width": 35,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "Modern Southern"
+    ],
+    "story": "2.5",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "corner_lot",
+      "Roof",
+      "Chimney",
+      "Bay_window",
+      "Porch",
+      "Balcony"
+    ],
+    "description": "roof的拐角不同，减少柱子",
+    "images": [
+      "https://www.dropbox.com/scl/fi/i1y4keu5e1zzic6pjydhv/A-046.png?rlkey=9f1n3h3lizs7mx1grxljcfaky&st=so4ul9rg&raw=1"
+    ]
+  },
+  {
+    "id": "A-047",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "This is pretty good also, I think the front gable could be a little larger because the three arches seem to a little tight.",
+    "images": [
+      "https://www.dropbox.com/scl/fi/8cywez67q8h2wvqdnoq7s/A-047.png?rlkey=qibb8e863utwhuxhtn1lvibbn&st=lxkaq61r&raw=1"
+    ]
+  },
+  {
+    "id": "A-048",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "简化pediment,立面与其他的五段式不同",
+    "images": [
+      "https://www.dropbox.com/scl/fi/i1xe8w5zw7xqe3khsk2zb/A-048.png?rlkey=bcnhvrrgfboz9jhj3nqedxz9k&st=rya326gv&raw=1"
+    ]
+  },
+  {
+    "id": "A-049",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "不喜欢两个椭圆窗子，顶层不是roof又显得不一样",
+    "images": [
+      "https://www.dropbox.com/scl/fi/5k8ip3jl55vvd5jqcglru/A-049a.png?rlkey=h2yvb380fwcbbdxbuyeytgojc&st=kaqxkum1&raw=1",
+      "https://www.dropbox.com/scl/fi/u2no487skwzvl288bnivm/A-049b.png?rlkey=saksz18ofusq5c1x23cbo9zrm&st=lv4klov7&raw=1"
+    ]
+  },
+  {
+    "id": "A-050",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stone"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Parapet"
+    ],
+    "description": "Like the shed roof here, a little different\nchimney怪怪的,改变造型",
+    "images": [
+      "https://www.dropbox.com/scl/fi/x68rh5qiatiw8t3dey367/A-050a.png?rlkey=um6ud3aad5wjekzh1vkm5fsx0&st=8m3p3cio&raw=1",
+      "https://www.dropbox.com/scl/fi/22nf5xjp8cl166qdikckn/A-050b.png?rlkey=1lgj7r4qf9nq3e2r63k3bwpwm&st=fvdttvdn&raw=1"
+    ]
+  },
+  {
+    "id": "A-051",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Bay_window"
+    ],
+    "description": "Like the bay window",
+    "images": [
+      "https://www.dropbox.com/scl/fi/m8eqf6yekiyuswg96vkyp/A-051.png?rlkey=x1kxpfy32wep3q5xh077me9cn&st=nv8hq1p9&raw=1"
+    ]
+  },
+  {
+    "id": "A-052",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stone"
+    ],
+    "style": [],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "gable",
+      "Entry"
+    ],
+    "description": "Like the gable front entry - a little different \n不对称的gable显得不同，缺点entry太宽",
+    "images": [
+      "https://www.dropbox.com/scl/fi/up76e4lkrxjqwk4cakru4/A-052.png?rlkey=56vriqvtnmxuuauu8y40ogw4v&st=0usfj8dz&raw=1"
+    ]
+  },
+  {
+    "id": "A-053",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [],
+    "description": "roof不太一样，可以try tpo roof,左边可以多recess",
+    "images": [
+      "https://www.dropbox.com/scl/fi/qenotibclg9y34l9r90vh/A-053.png?rlkey=xmpzprksegue6s19ihs1dou5c&st=ftss88os&raw=1"
+    ]
+  },
+  {
+    "id": "A-054",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry",
+      "Balcony",
+      "french_door"
+    ],
+    "description": "很贵的房子，喜欢大的balcony，french door+side light",
+    "images": [
+      "https://www.dropbox.com/scl/fi/d6wykg6uje71k81o2gvnj/A-054.png?rlkey=c7erow7peteszgi3b4s2wsg56&st=j5vzk9wv&raw=1"
+    ]
+  },
+  {
+    "id": "A-055",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/o8xxxcpsymllbvkx206en/A-055.png?rlkey=v5pxx9tcp59nsy82khqmaev4d&st=nnrucpfs&raw=1"
+    ]
+  },
+  {
+    "id": "A-056",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "3",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Column"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/535gp0fu74h6yhod04379/A-056.png?rlkey=smuc3w49hpb91j4s1gvss7b0o&st=xphjgvzl&raw=1"
+    ]
+  },
+  {
+    "id": "A-057",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Porch",
+      "Balcony"
+    ],
+    "description": "",
+    "images": [
+      "https://www.dropbox.com/scl/fi/xifgkjm3a934mpdy50p1q/A-057.png?rlkey=0m9m477sr6kwifsaua5tqm5jj&st=otvxt6qx&raw=1"
+    ]
+  },
+  {
+    "id": "A-058",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [],
+    "description": "去掉左边，看中间部分",
+    "images": [
+      "https://www.dropbox.com/scl/fi/bgizchjjih8nfjjdq4e8h/A-058.png?rlkey=fz2hvi638pleg6l967oiiiiv1&st=2f7ycejx&raw=1"
+    ]
+  },
+  {
+    "id": "A-059",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "也可以去掉两个小窗子窄的部分，用到窄一点的lot上",
+    "images": [
+      "https://www.dropbox.com/scl/fi/4ave381ixu38ilequq06e/A-059.png?rlkey=vb2yueng21epxsp1gw7jr090z&st=773hsmx7&raw=1"
+    ]
+  },
+  {
+    "id": "A-060",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "stucco"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "Celestine large homes\n左右两边不是完全对称但也不难看，front door上的roof太单薄",
+    "images": [
+      "https://www.dropbox.com/scl/fi/hg9tbewblujn5gmfnaz4f/A-060.png?rlkey=2hhtn0xyfx787ueugzamwey5v&st=ahczs2ky&raw=1"
+    ]
+  },
+  {
+    "id": "A-061",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "siding"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "symmetry"
+    ],
+    "description": "Like the 4 columns front porch,we should add to our front entries",
+    "images": [
+      "https://www.dropbox.com/scl/fi/wxt8kegjc138dqmxacc7r/A-061.png?rlkey=5ty00b7cd9u4ob46ckhq9xk63&st=thmtl0mj&raw=1"
+    ]
+  },
+  {
+    "id": "A-062",
+    "status": "active",
+    "facade_width": 80,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [],
+    "description": "注意window下面rail的高度，要能走出來使用。中间balcony和porch的弧度也可以小一点",
+    "images": [
+      "https://www.dropbox.com/scl/fi/7v885o6fuol0h94prrzg6/A-062.png?rlkey=hbpqlw2qhnf7o7mrhvbjf7hmj&st=u6fpl3rk&raw=1"
+    ]
+  },
+  {
+    "id": "A-098",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Bay_window",
+      "front_door"
+    ],
+    "description": "we built this house 30 years ago.  Check with Dennis and Lucy to see if we can buy the front door unit at OSE\n喜欢右边的一层半。bay window上面的overhang可以大点，一楼的shutter无效",
+    "images": [
+      "https://www.dropbox.com/scl/fi/95d0qok8n2y2s7gfb65zi/A-080.png?rlkey=o0b2vioyf0ii7qjaklvdz3kst&st=un4nf1ss&raw=1"
+    ]
+  },
+  {
+    "id": "A-098",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "",
+    "revit_model": false,
+    "tags": [
+      "Bay_window",
+      "front_door"
+    ],
+    "description": "we built this house 30 years ago.  Check with Dennis and Lucy to see if we can buy the front door unit at OSE\n喜欢右边的一层半。bay window上面的overhang可以大点，一楼的shutter无效",
+    "images": [
+      "https://www.dropbox.com/scl/fi/opx7kc8l5yd33u7n4zqh2/A-098.png?rlkey=7j20yabitih7k28j5tabwtlhv&st=gbkd8xyg&raw=1",
+      "https://www.dropbox.com/scl/fi/kpdng3pf27airl1lp89di/A-098a.png?rlkey=fa34g0waz7tzsmqhnelxk2ohh&st=lwimtkz4&raw=1"
+    ]
+  },
+  {
+    "id": "A-107",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "side",
+    "revit_model": false,
+    "tags": [],
+    "description": "不同的porch，立面都是french door",
+    "images": [
+      "https://www.dropbox.com/scl/fi/l5gyry0a0mlyf9eb49lm3/A-107.png?rlkey=cdkws0jrkyqsnl96g43pmzd84&st=lviqjpvi&raw=1",
+      "https://www.dropbox.com/scl/fi/6z86zhtcf20tr6f77vrig/A-107a.png?rlkey=7dy5oyqz64vzjtjjvbm9rueis&st=q7cev4ng&raw=1"
+    ]
+  },
+  {
+    "id": "A-110",
+    "status": "active",
+    "facade_width": 50,
+    "lot_width": null,
+    "lot_depth": null,
+    "wall_material": [
+      "brick"
+    ],
+    "style": [
+      "traditional"
+    ],
+    "story": "2",
+    "community": "",
+    "project": "",
+    "entry": "front",
+    "garage": "side",
+    "revit_model": false,
+    "tags": [],
+    "description": "This house has a courtyard right through the front entry\nThis one is good\nU型的平面图，立面不对称，但看上去很舒服，二楼的绿植弥补了空太大",
+    "images": [
+      "https://www.dropbox.com/scl/fi/oyviyk31h5s85dxyk00a0/A-110.png?rlkey=o9eite5ynei186bkidnxk8031&st=80muygyj&raw=1"
+    ]
+  }
 ];
 
 // ========================== MULTI-SELECT COMPONENT ==========================

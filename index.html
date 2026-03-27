@@ -100,7 +100,12 @@
         }
         .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
 
-        .card-img { width: 100%; height: 190px; object-fit: cover; background: #f3f4f6; display: block; }
+        .card-img { width: 100%; height: 190px; object-fit: cover; background: #e5e7eb; display: flex; align-items: center; justify-content: center; }
+        .card-img::after {
+            content: "加载中...";
+            color: #9ca3af;
+            font-size: 12px;
+        }
         .card-img-ph {
             width: 100%; height: 190px;
             background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
@@ -235,6 +240,7 @@
         </div>
 
         <div class="card-grid" id="cardGrid"></div>
+        <div id="pagination" class="flex items-center justify-center gap-2 py-6"></div>
         <div id="emptyState" class="hidden text-center py-20">
             <div class="text-5xl mb-3">🔍</div>
             <p class="text-gray-400 text-base font-medium">没有找到匹配的结果</p>
@@ -391,7 +397,9 @@ var sampleData = [
                 fw_target: null
             },
             sort: CONFIG.DEFAULT_SORT,
-            filtered: []
+            filtered: [],
+            page: 1,
+            perPage: 20
         };
 
         // ============================================================
@@ -667,6 +675,7 @@ var sampleData = [
         }
 
         function applyFilters() {
+            state.page = 1;
             var f = state.filters;
             var res = DATA.filter(function(d) {
                 if (f.community.length && f.community.indexOf(d.community) < 0) return false;
@@ -731,7 +740,10 @@ var sampleData = [
             }
             empty.classList.add("hidden");
 
-            grid.innerHTML = state.filtered.map(function(d, i) {
+            var start = (state.page - 1) * state.perPage;
+            var pageData = state.filtered.slice(start, start + state.perPage);
+
+            grid.innerHTML = pageData.map(function(d, i) {
                 var hasImg = d.images && d.images.length > 0;
                 var src = hasImg ? imgUrl(d.images[0]) : null;
                 var imgCount = d.images ? d.images.length : 0;
@@ -745,7 +757,7 @@ var sampleData = [
 
                 var imgHtml;
                 if (hasImg) {
-                    imgHtml = '<img class="card-img" src="' + esc(src) + '" alt="' + esc(d.id) + '" onerror="handleImgError(this)">';
+                    imgHtml = '<img class="card-img" src="' + esc(src) + '" alt="' + esc(d.id) + '" loading="lazy" onerror="handleImgError(this)">';
                 } else {
                     imgHtml = '<div class="card-img-ph"><span class="icon">\uD83C\uDFE0</span><span class="txt">无图片</span></div>';
                 }
@@ -789,9 +801,47 @@ var sampleData = [
 
         function updCount() {
             var t = DATA.length, s = state.filtered.length;
+            var start = (state.page - 1) * state.perPage + 1;
+            var end = Math.min(state.page * state.perPage, s);
             document.getElementById("headerCount").textContent = s + ' / ' + t;
-            document.getElementById("resultSummary").textContent = '显示 ' + s + ' / ' + t + ' 条结果';
+            document.getElementById("resultSummary").textContent = s > 0 ? '显示 ' + start + '-' + end + ' / ' + s + ' 条' : '显示 0 条';
+            renderPagination();
         }
+
+        function renderPagination() {
+            var div = document.getElementById("pagination");
+            if (!div) return;
+            var s = state.filtered.length;
+            if (s <= state.perPage) {
+                div.innerHTML = "";
+                return;
+            }
+            var totalPages = Math.ceil(s / state.perPage);
+            var html = "";
+            if (state.page > 1) {
+                html += '<button class="px-3 py-1 border rounded text-sm hover:bg-gray-50" data-page="' + (state.page - 1) + '">上一页</button>';
+            }
+            html += '<span class="px-3 py-1 text-sm">' + state.page + ' / ' + totalPages + '</span>';
+            if (state.page < totalPages) {
+                html += '<button class="px-3 py-1 border rounded text-sm hover:bg-gray-50" data-page="' + (state.page + 1) + '">下一页</button>';
+            }
+            div.innerHTML = html;
+        }
+
+        function goPage(p) {
+            var totalPages = Math.ceil(state.filtered.length / state.perPage);
+            if (p < 1 || p > totalPages) return;
+            state.page = p;
+            renderCards();
+            updCount();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.getElementById("pagination").addEventListener("click", function(e) {
+            if (e.target.tagName === "BUTTON") {
+                goPage(parseInt(e.target.dataset.page));
+            }
+        });
 
         // ============================================================
         // ACTIVE FILTER CHIPS
@@ -864,7 +914,7 @@ var sampleData = [
             var crsHtml;
             if (d.images && d.images.length > 0) {
                 var slides = d.images.map(function(img) {
-                    return '<img class="crs-slide" src="' + esc(imgUrl(img)) + '" alt="' + esc(d.id) + '" onerror="this.style.background=\'#e0e7ff\'">';
+                                        return '<img class="crs-slide" src="' + esc(imgUrl(img)) + '" alt="' + esc(d.id) + '" onerror="this.style.background=\'#e0e7ff\'">';
                 }).join("");
                 var navHtml = '';
                 if (d.images.length > 1) {

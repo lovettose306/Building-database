@@ -165,14 +165,14 @@
         }
         .modal-bg.open { display: flex; }
         .modal-box {
-            background: white; border-radius: 14px; max-width: 780px; width: 100%;
-            max-height: 90vh; overflow-y: auto;
+            background: white; border-radius: 14px; max-width: 900px; width: 100%;
+            max-height: 95vh; overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .crs { position: relative; overflow: hidden; background: #f9fafb; }
         .crs-track { display: flex; transition: transform 0.3s ease; }
-        .crs-slide { min-width: 100%; height: 320px; object-fit: contain; background: #f9fafb; }
+        .crs-slide { min-width: 100%; height: 500px; object-fit: contain; background: #f9fafb; }
         .crs-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(255,255,255,0.92); border: none;
@@ -744,6 +744,7 @@ var sampleData = [
             var pageData = state.filtered.slice(start, start + state.perPage);
 
             grid.innerHTML = pageData.map(function(d, i) {
+                var realIdx = start + i;
                 var hasImg = d.images && d.images.length > 0;
                 var src = hasImg ? imgUrl(d.images[0]) : null;
                 var imgCount = d.images ? d.images.length : 0;
@@ -776,7 +777,7 @@ var sampleData = [
                 if (d.lot_width !== null) line3 += ' \u00B7 \uD83D\uDCCF ' + d.lot_width + (d.lot_depth ? '\u00D7'+d.lot_depth : '') + 'ft';
                 if (line3) infoLines += '<div>' + line3 + '</div>';
 
-                return '<div class="card" data-i="' + i + '">' +
+                return '<div class="card" data-i="' + realIdx + '">' +
                     '<div class="relative">' + imgHtml + counterHtml + '</div>' +
                     '<div class="p-3">' +
                     '<div class="flex items-center justify-between mb-1">' +
@@ -914,7 +915,7 @@ var sampleData = [
             var crsHtml;
             if (d.images && d.images.length > 0) {
                 var slides = d.images.map(function(img) {
-                                        return '<img class="crs-slide" src="' + esc(imgUrl(img)) + '" alt="' + esc(d.id) + '" onerror="this.style.background=\'#e0e7ff\'">';
+                    return '<img class="crs-slide" src="' + esc(imgUrl(img)) + '" alt="' + esc(d.id) + '" onerror="this.style.background=\'#e0e7ff\'">';
                 }).join("");
                 var navHtml = '';
                 if (d.images.length > 1) {
@@ -933,39 +934,11 @@ var sampleData = [
             }
             crsIdx = 0;
 
-            var rows = [];
-            if (d.community) rows.push(["\uD83D\uDCCD Community 社区",d.community]);
-            if (d.project) rows.push(["\uD83C\uDFD7\uFE0F Project 项目",d.project]);
-            if (d.story) rows.push(["\uD83C\uDFE2 Story 层数",d.story+"-Story"]);
-            if (d.entry) rows.push(["\uD83D\uDEAA Entry 入口",d.entry]);
-            if (d.garage) rows.push(["\uD83D\uDE97 Garage 车库",d.garage]);
-            rows.push(["\uD83D\uDCD0 Revit Model", d.revit_model?"\u2705 有":"\u274C 无"]);
-            if (d.facade_width !== null) rows.push(["\uD83C\uDFE0 Facade Width 门面宽度",d.facade_width+" ft (\u00B1"+(d.facade_width_tolerance||0)+")"]);
-            if (d.lot_width !== null) rows.push(["\uD83D\uDCCF Lot Width 地块宽度",d.lot_width+" ft"]);
-            if (d.lot_depth !== null) rows.push(["\uD83D\uDCCF Lot Depth 地块深度",d.lot_depth+" ft"]);
-            if (d.wall_material.length) rows.push(["\uD83E\uDDF1 Wall Material 墙体材料",d.wall_material.join(", ")]);
-            if (d.style.length) rows.push(["\uD83C\uDFA8 Style 风格",d.style.join(", ")]);
-            if (d.facade_bump.length) rows.push(["\uD83D\uDCCA Facade Bump 凸起",d.facade_bump.join(", ")]);
-            if (d.main_roof.length) rows.push(["\uD83C\uDFE0 Main Roof 主屋顶",d.main_roof.join(", ")]);
-            if (d.tags.length) rows.push(["\uD83C\uDFF7\uFE0F Tags 标签",d.tags.join(", ")]);
-
-            var tableRows = rows.map(function(r) {
-                return '<tr class="border-b border-gray-50"><td class="py-2 pr-3 text-gray-400 font-medium whitespace-nowrap text-xs">'+esc(r[0])+'</td><td class="py-2 text-gray-700 text-xs">'+esc(r[1])+'</td></tr>';
-            }).join("");
-
-            var descHtml = '';
-            if (d.description) {
-                descHtml = '<div class="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-600 leading-relaxed">' +
-                    '<div class="text-xs font-semibold text-gray-400 mb-1">\uD83D\uDCDD Description 描述</div>' +
-                    esc(d.description).replace(/\n/g,'<br>') + '</div>';
-            }
-
             box.innerHTML =
                 '<div class="sticky top-0 bg-white flex items-center justify-between px-5 py-3 border-b border-gray-200 z-10 rounded-t-xl">' +
                 '<h2 class="text-base font-bold text-gray-800">' + esc(d.id) + '</h2>' +
                 '<button id="modalClose" class="text-gray-400 hover:text-gray-600 text-xl leading-none px-1">\u2715</button></div>' +
-                crsHtml +
-                '<div class="p-5"><table class="w-full text-sm">' + tableRows + '</table>' + descHtml + '</div>';
+                '<div class="p-4">' + crsHtml + '</div>';
 
             modal.classList.add("open");
             document.body.style.overflow = "hidden";

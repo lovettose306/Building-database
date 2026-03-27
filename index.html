@@ -53,7 +53,6 @@
         }
         .ms-search input:focus { border-color: #93c5fd; }
 
-        /* ===== OR / AND toggle ===== */
         .ms-mode {
             display: flex; padding: 5px 6px; gap: 4px;
             border-bottom: 1px solid #e5e7eb; background: #fafafa;
@@ -64,13 +63,9 @@
             font-size: 11px; font-weight: 700; transition: all 0.15s;
             flex: 1; text-align: center;
         }
-        .ms-mode-btn:hover:not(.active) { background: #f3f4f6; }
-        .ms-mode-btn.active-or {
-            background: #7c3aed; color: white; border-color: #7c3aed;
-        }
-        .ms-mode-btn.active-and {
-            background: #059669; color: white; border-color: #059669;
-        }
+        .ms-mode-btn:hover:not(.sel) { background: #f3f4f6; }
+        .ms-mode-btn.sel-or { background: #7c3aed; color: white; border-color: #7c3aed; }
+        .ms-mode-btn.sel-and { background: #059669; color: white; border-color: #059669; }
 
         .ms-opts { overflow-y: auto; flex: 1; padding: 2px 0; }
         .ms-opt {
@@ -101,12 +96,11 @@
             background: white; border-radius: 12px; overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;
             transition: all 0.2s; cursor: pointer;
+            animation: cardIn 0.25s ease;
         }
         .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
 
-        .card-img {
-            width: 100%; height: 190px; object-fit: cover; background: #f3f4f6; display: block;
-        }
+        .card-img { width: 100%; height: 190px; object-fit: cover; background: #f3f4f6; display: block; }
         .card-img-ph {
             width: 100%; height: 190px;
             background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
@@ -141,7 +135,7 @@
         .rg-group { display: flex; align-items: center; gap: 5px; }
         .rg-input {
             padding: 6px 8px; border: 1.5px solid #d1d5db;
-            border-radius: 6px; font-size: 12px; outline: none;
+            border-radius: 6px; font-size: 12px; outline: none; width: 200px;
         }
         .rg-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
 
@@ -170,8 +164,6 @@
             max-height: 90vh; overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        .modal-box::-webkit-scrollbar { width: 5px; }
-        .modal-box::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 
         .crs { position: relative; overflow: hidden; background: #f9fafb; }
         .crs-track { display: flex; transition: transform 0.3s ease; }
@@ -193,17 +185,13 @@
         }
         .crs-dot.active { background: #3b82f6; }
 
-        .ms-opts::-webkit-scrollbar { width: 5px; }
-        .ms-opts::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-
-        @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .card { animation: cardIn 0.25s ease; }
-
         .img-counter {
             position: absolute; bottom: 8px; right: 8px;
             background: rgba(0,0,0,0.55); color: white;
             padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;
         }
+
+        @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -214,12 +202,11 @@
                 🏠 Better Elevation Filter
                 <span class="text-gray-400 font-normal text-sm ml-1">立面筛选器</span>
             </h1>
-            <div class="text-sm font-semibold text-blue-600" id="headerCount">—</div>
+            <div class="text-sm font-semibold text-blue-600" id="headerCount"></div>
         </div>
     </header>
 
     <div class="max-w-7xl mx-auto px-4 py-4">
-
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm mb-4">
             <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none" id="filterToggle">
                 <h2 class="text-sm font-bold text-gray-700">🔍 筛选条件 Filters</h2>
@@ -230,8 +217,7 @@
                 <div class="mt-3" id="rangeFilters"></div>
                 <div class="mt-3 flex items-center justify-between flex-wrap gap-2">
                     <div id="activeFilters" class="flex flex-wrap"></div>
-                    <button id="resetBtn"
-                        class="px-4 py-1.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-500 rounded-lg text-xs font-semibold transition flex items-center gap-1 border border-gray-200">
+                    <button id="resetBtn" class="px-4 py-1.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-500 rounded-lg text-xs font-semibold transition flex items-center gap-1 border border-gray-200">
                         🔄 重置筛选
                     </button>
                 </div>
@@ -239,10 +225,9 @@
         </div>
 
         <div class="flex items-center justify-between mb-3">
-            <div class="text-xs text-gray-500" id="resultSummary">—</div>
+            <div class="text-xs text-gray-500" id="resultSummary"></div>
             <div class="sort-dd">
-                <button id="sortBtn"
-                    class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 flex items-center gap-1 shadow-sm">
+                <button id="sortBtn" class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 flex items-center gap-1 shadow-sm">
                     <span id="sortLabel">ID ↑</span> <span class="text-gray-400">▾</span>
                 </button>
                 <div id="sortMenu" class="sort-menu"></div>
@@ -250,7 +235,6 @@
         </div>
 
         <div class="card-grid" id="cardGrid"></div>
-
         <div id="emptyState" class="hidden text-center py-20">
             <div class="text-5xl mb-3">🔍</div>
             <p class="text-gray-400 text-base font-medium">没有找到匹配的结果</p>
@@ -262,687 +246,748 @@
         <div class="modal-box" id="modalBox"></div>
     </div>
 
-<script>
-const CONFIG = {
-    IMAGE_BASE_PATH: "images/",
-    STRIP_IMAGE_FOLDERS: true,
-    DEFAULT_SORT: "id_asc",
-};
+    <script>
+        // ============================================================
+        // CONFIG
+        // ============================================================
+        var CONFIG = {
+            IMAGE_BASE_PATH: "images/",
+            STRIP_IMAGE_FOLDERS: true,
+            DEFAULT_SORT: "id_asc"
+        };
 
-// ===== 筛选选项列表 =====
-const COMMUNITIES = ["Lake Celestine","Lake Celestine,solana hills","RAVENNA","Verone"];
-const PROJECTS = ["7503 Viano Lane"];
-const STORY_OPTS = ["1.5","2","2.5","3"];
-const ENTRY_OPTS = ["front"];
-const GARAGE_OPTS = ["front","rear","side"];
-const WALL_MATS = ["brick","metal siding","siding","stone","stucco"];
-const STYLES = ["Charleston","Modern Southern","Southern colonial","colonial","townhouse","traditional"];
-const ALL_TAGS = ["Balcony","Bay_window","Chimney","Column","Dormer","Entry","Parapet","Porch","Roof","balcony","banding","corner","corner_lot","cornice","different_plate","elevation_flat","flat_roof","french_door","front_door","front_yard","gable","hide_garage","metal_column","pitch_change","plant","porte_cochere","recess","shape","shutter","side_balcony","side_yard","steps","symmetry","trellis"];
-const BUMPS = ["bump","bump with porch","bump_center","bump_double_gable","bump_side","flat","flat with porch"];
-const ROOFS = [];
+        // ============================================================
+        // DATA (A-001 to A-050)
+        // ============================================================
+var sampleData = [
+          {Elevation_ID:"A-001",facade_width:"70",facade_width_tolerance:"5",wall_material:["brick","siding"],style:["traditional"],facade_bump:["bump_double_gable"],main_roof:["gable"],story:"2",entry:"front",garage:"rear",revit_model:true,tags:["gable"],description:"John Staub's old house, Same Staub house but with a different way to get into the garage - we can do two versions, one for the garage and the other for only the main facade on narrower lot. 想办法做 attach garage，好处是下雨不淋雨，可以二楼连通起來，面积更大",images:["https://www.dropbox.com/scl/fi/j9c8wuehx4ksgaguelwdr/A-001a.png?rlkey=ux2j48525x093lzmahzjojv7v&st=7ukeclu4&raw=1","https://www.dropbox.com/scl/fi/cnr3iffxs28pqdu91ewph/A-001b.png?rlkey=jl094yv00n9bjsx9p07zqyec5&st=y6hkd70s&raw=1"]},
+          {Elevation_ID:"A-002",facade_width:"50",facade_width_tolerance:"5",wall_material:["siding"],style:["traditional"],facade_bump:"flat",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"LOVE this house on a wider lot and for it to set back a lot",images:["https://www.dropbox.com/scl/fi/xioyvqogmuw6icskr3ifj/A-002.png?rlkey=m3gnpewfv46wvc3kb6pk8wcvm&st=wcmkmyxo&raw=1"]},
+          {Elevation_ID:"A-003",facade_width:"80",facade_width_tolerance:"5",wall_material:["brick","stone"],style:["traditional"],facade_bump:"bump",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["gable","shape"],description:"基本完美",images:["https://www.dropbox.com/scl/fi/3e5cme0fjuks9wl0716p9/A-003.png?rlkey=n06ayaaf55lxwxwxwd1n2oe7y&st=ytznow09&raw=1"]},
+          {Elevation_ID:"A-004",facade_width:"80",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_center",main_roof:"hip",story:"2",entry:"front",garage:"rear",revit_model:true,tags:["symmetry","porte_cochere"],description:"very nice, should do one at Celestine for sure. 喜欢对称，pediment稍微太大了，右边也可以只做一层",images:["https://www.dropbox.com/scl/fi/i3a893kzjbjjeva4wlj6z/A-004.png?rlkey=dess3lflo17l25nnyd1uqhchl&st=j87i7f1t&raw=1"]},
+          {Elevation_ID:"A-005",facade_width:"80",facade_width_tolerance:"5",wall_material:["stucco"],style:["traditional"],facade_bump:"bump_center",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"一层三个窗子，二层两个窗子，不完全对称也很好.Notice the wing is always lower than the main part",images:["https://www.dropbox.com/scl/fi/w9u5kmvrygjkjhxo11b35/A-005.png?rlkey=9boagbram6lx4x4fdxopvnsvb&st=596c0inb&raw=1"]},
+          {Elevation_ID:"A-006",facade_width:"80",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"flat with porch",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry","trellis"],description:"also good, but I would make the front porch more simple. Please note these are all flat fronts, but adding a little detail like this will change the look",images:["https://www.dropbox.com/scl/fi/r69ptkwujiljm77vhvvl9/A-006.png?rlkey=hp0d8pp1z638ewy4ii19wkes5&st=fo5nd58e&raw=1"]},
+          {Elevation_ID:"A-007",facade_width:"75",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"flat with porch",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["Porch"],description:"front door很高大，porch也很高，很喜欢",images:["https://www.dropbox.com/scl/fi/06x1d6guap06f8li24za5/A-007.png?rlkey=ftquyn0isdq8r2un5sc13rpwv&st=g1dhv0c3&raw=1"]},
+          {Elevation_ID:"A-008",facade_width:"75",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_side",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:true,tags:["symmetry","gable"],description:"Celestine A plus  很喜欢",images:["https://www.dropbox.com/scl/fi/0ts6d4g9iodspiuxa96x2/A-008.png?rlkey=ech8h6lmtrgukcl2h7lxkgr7m&st=mdyutr7n&raw=1","https://www.dropbox.com/scl/fi/x8axy88dgctc9m3tf7phw/A-008b.png?rlkey=falbyn5jwly9ym04m6t6mmbgt&st=9og1iwq9&raw=1"]},
+          {Elevation_ID:"A-009",facade_width:"65",facade_width_tolerance:"5",wall_material:["siding"],style:[],facade_bump:["flat"],main_roof:["hip"],story:"2",entry:"front",garage:"",revit_model:false,tags:["plant"],description:"good to repeat很喜欢，加绿植",images:["https://www.dropbox.com/scl/fi/sdrsb57fuf269t2hfmgki/A-009.png?rlkey=v7cgf39xfbu06pkr0sn59l68v&st=3ap7ha16&raw=1"]},
+          {Elevation_ID:"A-010",facade_width:"61",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional","colonial"],facade_bump:"bump_side",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"Good elevation for future use especially on large lots like Celestine and solana hills",images:["https://www.dropbox.com/scl/fi/02dl55qw9a7pyglokm3ke/A-010.png?rlkey=xct15t6br2i5jpwr4q283yze6&st=vycyuvku&raw=1"]},
+          {Elevation_ID:"A-011",facade_width:"60",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional","Southern colonial"],facade_bump:"flat with porch",main_roof:"hip",story:"2",entry:"front",garage:"rear",revit_model:false,tags:["Porch","Balcony","Dormer"],description:"",images:["https://www.dropbox.com/scl/fi/r3rfqxejb3ci3lk21yzb9/A-011.png?rlkey=6p0myzyafv2zvfxmap50biaak&st=ajk3uufb&raw=1"]},
+          {Elevation_ID:"A-012",facade_width:"60",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_center",main_roof:"hip & gable",story:"2",entry:"front",garage:"",revit_model:true,tags:["symmetry","gable"],description:"",images:["https://www.dropbox.com/scl/fi/5u5hbkjzbwkqel00uxxiz/A-012.png?rlkey=r1t6w55gu62t4fu87ubc9thx6&st=wp1e1isf&raw=1"]},
+          {Elevation_ID:"A-013",facade_width:"60",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_side",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry","shape","Dormer"],description:"I like the shape of this, it is not a perfect even front like the first picture. This is also very good. pitch可以大点，roof高点可能又不一样",images:["https://www.dropbox.com/scl/fi/21heqi0nrls6ifs9q1uij/A-013.png?rlkey=apwihx73v33cvtivkak8u69ui&st=8ihrebfq&raw=1"]},
+          {Elevation_ID:"A-014",facade_width:"60",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_center",main_roof:"hip & gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry","metal_column","Porch"],description:"喜欢铁艺的柱子,porch可以多点overhang",images:["https://www.dropbox.com/scl/fi/7ace20ge21l0pi0uhntpr/A-014.png?rlkey=s1bgiti614e8r5yb23h3h1aqf&st=246u3ed0&raw=1"]},
+          {Elevation_ID:"A-015",facade_width:"60",facade_width_tolerance:"5",wall_material:["stucco"],style:["traditional"],facade_bump:"bump_side",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"Maybe we can do this at Verone, We should do this with all the different floor plans. front door 的trim显得不同，两边的trim宽一点可能更好看",images:["https://www.dropbox.com/scl/fi/4lq3zl5xslzaogedhnouc/A-015.png?rlkey=8kfyxc4r80vcxru0cioryu2nj&st=v57i4vy2&raw=1"]},
+          {Elevation_ID:"A-016",facade_width:"53",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_side",main_roof:"hip",story:"2",entry:"front",garage:"side",revit_model:true,tags:["banding","corner"],description:"看上去对称，其实不对称，很舒服，喜欢这种banding不希望做stucoo全部做brick",images:["https://www.dropbox.com/scl/fi/mm6yb9zmpjf6fhy6tbvcc/A-016.png?rlkey=41kll7xev7uxxb0lcsgxgmher&st=jjrukw4r&raw=1"]},
+          {Elevation_ID:"A-017",facade_width:"50",facade_width_tolerance:"5",wall_material:["stucco","siding"],style:["traditional"],facade_bump:"bump",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["gable","shape"],description:"去掉右边完美",images:["https://www.dropbox.com/scl/fi/5kr7x46wdnvwvlvfdzg0y/A-017.png?rlkey=z10dq08b0fbx0d9edr8zp71pp&st=tcwoh9bv&raw=1"]},
+          {Elevation_ID:"A-018",facade_width:"50",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:["flat"],main_roof:["hip"],story:"2",entry:"front",garage:"",revit_model:false,tags:["steps","symmetry"],description:"喜欢台阶上去",images:["https://www.dropbox.com/scl/fi/cly7bzjqs4c8g9m3vz008/A-018.png?rlkey=jhxnqwn0t2hvhayt64vosy0bg&st=lhba7dq1&raw=1"]},
+          {Elevation_ID:"A-019",facade_width:"50",facade_width_tolerance:"5",wall_material:["siding"],style:["traditional"],facade_bump:["flat"],main_roof:["hip"],story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry","Dormer","cornice"],description:"dormer的gable太窄了，做宽一點，注意cornice detail",images:["https://www.dropbox.com/scl/fi/an2znjpph77p29we02w76/A-019.png?rlkey=1cjgwyf3xf6eaq0hmz0ac3yqb&st=9ppadp5s&raw=1"]},
+          {Elevation_ID:"A-020",facade_width:"50",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"flat",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"This is almost perfect",images:["https://www.dropbox.com/scl/fi/yu6bucree8v6gdd3kjt5x/A-020.png?rlkey=iq8ucfpjkfuehntj7m9ltc4xs&st=vezpqbdq&raw=1"]},
+          {Elevation_ID:"A-021",facade_width:"50",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_center",main_roof:"hip & gable",story:"2",entry:"front",garage:"front",revit_model:true,tags:["symmetry","gable"],description:"main part of the house is good, expect the front pediment is too light and I do not want to see the little roof. porch recess最多3.5'， key stone可以尝试",images:["https://www.dropbox.com/scl/fi/nur9fzy9xhdmnlwa4f21y/A-021.png?rlkey=y0oqes9isvuh9gbm330b46fxp&st=a0q0raj8&raw=1"]},
+          {Elevation_ID:"A-022",facade_width:"45",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"flat",main_roof:"gable",story:"2",entry:"front",garage:"rear",revit_model:false,tags:["symmetry","Dormer"],description:"",images:["https://www.dropbox.com/scl/fi/ejoro0wc74o82im2u3ewc/A-022.png?rlkey=9pzwwxl1767oni1ykpuibbz73&st=ielt6438&raw=1"]},
+          {Elevation_ID:"A-023",facade_width:"45",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_side",main_roof:"gable",story:"2",entry:"front",garage:"rear",revit_model:false,tags:["different_plate","Dormer","front_yard"],description:"喜欢最左侧的院墙，左边一层半可以更高一点，dormer太大了，把band提高。",images:["https://www.dropbox.com/scl/fi/22ae2v8jvsmc8v0qtlfer/A-023.png?rlkey=du45pqugl57qwf01d8t3nzdxm&st=dqobqtnm&raw=1"]},
+          {Elevation_ID:"A-024",facade_width:"45",facade_width_tolerance:"5",wall_material:["brick","siding"],style:["traditional"],facade_bump:"bump_side",main_roof:"gable",story:"2",entry:"front",garage:"rear",revit_model:true,tags:["recess","front_yard","shutter"],description:"perfect! Can be done in siding. 左边recess变得不同，也可以recess更多，做一个侧前院+gate  二层shutter无效保护",images:["https://www.dropbox.com/scl/fi/r1id8orjzege11s4u603y/A-024.png?rlkey=xhh3regxqk89qnlxf14smmvas&st=ezmly6kn&raw=1"]},
+          {Elevation_ID:"A-025",facade_width:"45",facade_width_tolerance:"5",wall_material:["brick","siding"],style:["traditional"],facade_bump:"bump_double_gable",main_roof:"gable",story:"2",entry:"front",garage:"side",revit_model:false,tags:["gable","shutter","hide_garage"],description:"Like this house, we built this in 1998. The pediment could be a little better. porch可以宽一点，shutter无效保护，加wing wall挡一下车库",images:["https://www.dropbox.com/scl/fi/ds5qs1x2nlfrd67lyuyek/A-025.png?rlkey=nt7dljftysjcy1f32dzfdmfs7&st=kggi7dmw&raw=1"]},
+          {Elevation_ID:"A-026",facade_width:"45",facade_width_tolerance:"5",wall_material:["brick","siding"],style:["traditional"],facade_bump:"bump_double_gable",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["gable","Bay_window"],description:"bay一般是木头做的，中间gable的窗子可以大一点",images:["https://www.dropbox.com/scl/fi/tv4ts0lao6kapalgfhlrb/A-026.png?rlkey=5hgalkunqs72mfk7zowdx5508&st=jgyb1r9q&raw=1"]},
+          {Elevation_ID:"A-027",facade_width:"42",facade_width_tolerance:"3",wall_material:["brick","metal siding"],style:["traditional"],facade_bump:"bump_side",main_roof:"gable",story:"2.5",entry:"front",garage:"",revit_model:false,tags:["Porch","Chimney"],description:"porch可以做flat roof，烟囱改变造型",images:["https://www.dropbox.com/scl/fi/t2953iezrnanr99cjbt0q/A-027.png?rlkey=njbj9nl6uyebx3nnmzihj9jx9&st=8ojut3pf&raw=1"]},
+          {Elevation_ID:"A-028",facade_width:"40",facade_width_tolerance:"3",wall_material:["brick"],style:["Charleston"],facade_bump:"bump_side",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["side_yard","side_balcony"],description:"Charleston house is a house with door to the side and has a nice size side courtyard,Windows are ok instead of French doors. dormer可以做得更好,overhang太大",images:["https://www.dropbox.com/scl/fi/mzufz4oqaeorsip15c0jm/A-028.png?rlkey=xetmm7d08d9ccudtl417upwz7&st=3dv45tw9&raw=1"]},
+          {Elevation_ID:"A-029",facade_width:"40",facade_width_tolerance:"3",wall_material:["brick"],style:["Charleston"],facade_bump:"bump_side",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["Parapet","side_yard"],description:"左侧装饰好看，parapet wall造型上面的线条可以多一点",images:["https://www.dropbox.com/scl/fi/kjunmsc2tz4zvudq77lu7/A-029.png?rlkey=lailtt93idaojb95jt9zsjmp6&st=uhh77gj6&raw=1"]},
+          {Elevation_ID:"A-030",facade_width:"36",facade_width_tolerance:"3",wall_material:["brick"],style:["traditional"],facade_bump:"flat with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry","Dormer"],description:"column太细",images:["https://www.dropbox.com/scl/fi/mdacigbsc3ef2lhyei97z/A-030.png?rlkey=2buu03bigvst06pr2cewb7xom&st=ww1aenbp&raw=1"]},
+          {Elevation_ID:"A-031",facade_width:"35",facade_width_tolerance:"3",wall_material:["siding"],style:["Modern Southern"],facade_bump:"bump with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["Porch","gable"],description:"vent可以变小一些",images:["https://www.dropbox.com/scl/fi/ys2b2xodrjrp8vzplj8l6/A-031.png?rlkey=twygfux40a0nk0go2r2jouv98&st=o9z4rhtm&raw=1"]},
+          {Elevation_ID:"A-032",facade_width:"35",facade_width_tolerance:"3",wall_material:["siding"],style:["townhouse"],facade_bump:"flat with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"No need to copy 100 Percent but there are essential elements that I like about each of the homes. porch又高又细不好看，可以把porch变宽或者不要porch",images:["https://www.dropbox.com/scl/fi/r9lhxwpdbxoi9b611khc5/A-032.png?rlkey=jho30ynct7nxpek080ouxcjt5&st=qiedmgw4&raw=1"]},
+          {Elevation_ID:"A-033",facade_width:"22",facade_width_tolerance:"3",wall_material:["siding","brick"],style:["townhouse"],facade_bump:"flat",main_roof:"gable",story:"3",entry:"front",garage:"",revit_model:false,tags:["balcony"],description:"喜欢第一个balcony凸出去，一层加高更好看。不喜欢第三个立面",images:["https://www.dropbox.com/scl/fi/05wmg69ic7ndkfp3tq3qm/A-033.png?rlkey=1h9xlyskxxgyoprab31u6duxu&st=sd6rhpy4&raw=1"]},
+          {Elevation_ID:"A-034",facade_width:"55",facade_width_tolerance:"5",wall_material:["siding"],style:["Modern Southern"],facade_bump:"flat with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["corner_lot","Porch","Balcony"],description:"sunroom很貴，二层可以做french door出来做个deck",images:["https://www.dropbox.com/scl/fi/nrp1mxscko01oz3wnrnfh/A-034.png?rlkey=7fxbdgip1im0ghe58sg5ocpah&st=8uyj6l0g&raw=1"]},
+          {Elevation_ID:"A-035",facade_width:"50",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_side",main_roof:"hip & gable",story:"2",entry:"front",garage:"rear",revit_model:false,tags:["Porch","shape","Chimney","corner_lot"],description:"假的chimney很好。front door可以根据平面需要做不同的位置",images:["https://www.dropbox.com/scl/fi/isl3e2v7fncst1p4zw436/A-035.png?rlkey=f53km794098h7nghj0mah7g2u&st=5pzex2rv&raw=1"]},
+          {Elevation_ID:"A-036",facade_width:"45",facade_width_tolerance:"3",wall_material:["stucco"],style:["traditional"],facade_bump:"bump_side",main_roof:"gable",story:"2",entry:"front",garage:"rear",revit_model:false,tags:["shape","Chimney","corner_lot","pitch_change"],description:"Love this and like the shape, but we can do better. 不同的chimney cap，喜欢pitch change",images:["https://www.dropbox.com/scl/fi/sa1fbwqaz7vvupfdfebph/A-036.png?rlkey=qab8q6koirlt8p3swek930i4e&st=sbzzuasc&raw=1"]},
+          {Elevation_ID:"A-037",facade_width:"45",facade_width_tolerance:"3",wall_material:["brick"],style:["traditional"],facade_bump:"bump with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["Chimney","corner_lot","Porch"],description:"很漂亮，但柱子太多太貴了，烟囱可以做造型",images:["https://www.dropbox.com/scl/fi/vtjwis147fwxro6rrjfs2/A-037.png?rlkey=vd0c6iez69unyzj6g2sfocowp&st=v5kmjp87&raw=1"]},
+          {Elevation_ID:"A-038",facade_width:"30",facade_width_tolerance:"3",wall_material:["siding"],style:[],facade_bump:"flat with porch",main_roof:"gable",story:"1.5",entry:"front",garage:"",revit_model:false,tags:["corner_lot","Porch","flat_roof"],description:"Love to do this at the next busy corners or street facing Kolbe, Crosby fronting at Carrollton, Eastwood, lake pointe. 可以照抄，喜欢一层的flat roof，一楼很高，阳光充足。",images:["https://www.dropbox.com/scl/fi/xa7jjscgq4tv69awzx6kn/A-038.png?rlkey=tswskuufe4iw6jsopew4gcxsu&st=l3yp9f2l&raw=1"]},
+          {Elevation_ID:"A-039",facade_width:"80",facade_width_tolerance:"5",wall_material:["brick"],style:[],facade_bump:"bump with porch",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["corner_lot","different_plate"],description:"有二层，有tower的三层，高度有变化",images:["https://www.dropbox.com/scl/fi/8deeegacntecog70968a4/A-039.png?rlkey=t4otz534zy6c319b0w9u3297p&st=5a7hmsq8&raw=1"]},
+          {Elevation_ID:"A-040",facade_width:"65",facade_width_tolerance:"5",wall_material:["siding"],style:["Modern Southern"],facade_bump:"bump with porch",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["corner_lot","porte_cochere"],description:"L型的porch，主roof可以调高",images:["https://www.dropbox.com/scl/fi/hnsf60n2haklfui9upieo/A-040.png?rlkey=7jq002wdlftyvv04yv7jehybi&st=0t4vsskq&raw=1"]},
+          {Elevation_ID:"A-041",facade_width:"60",facade_width_tolerance:"5",wall_material:["brick"],style:["Modern Southern"],facade_bump:"bump with porch",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["corner_lot"],description:"",images:["https://www.dropbox.com/scl/fi/85k07frh5i1bp8tlpf3jl/A-041.png?rlkey=mnbt27ac5c9y4jlgdffr3l0wd&st=oo4f4ufm&raw=1"]},
+          {Elevation_ID:"A-042",facade_width:"47",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump with porch",main_roof:"hip",story:"2",entry:"front",garage:"rear",revit_model:false,tags:["corner_lot","side_yard","Chimney"],description:"喜欢side yard，chimney cap, porch的roof太陡，可以尝试tpo roof",images:["https://www.dropbox.com/scl/fi/x21xx37bym4676cu5xzjh/A-042.png?rlkey=nkddlvd2d6q4jexujbygw18cx&st=7slqltt1&raw=1"]},
+          {Elevation_ID:"A-043",facade_width:"45",facade_width_tolerance:"5",wall_material:["siding"],style:["Modern Southern"],facade_bump:"bump with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["corner_lot","Chimney"],description:"façade&flat bay window. L型porch不一樣但是贵，bay window不太一样，柱子太多，chinmey需要改变造型，shutter太多，房子加高可能更好看",images:["https://www.dropbox.com/scl/fi/d9qcz112vwcv352jze6uf/A-043.png?rlkey=v6nxrh8tngm9poipowzyg9vwg&st=itw0pdgd&raw=1"]},
+          {Elevation_ID:"A-044",facade_width:"35",facade_width_tolerance:"3",wall_material:["siding"],style:["Modern Southern"],facade_bump:"flat with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["corner_lot","Chimney","Balcony"],description:"烟囱很好看,porch+balcony也很好",images:["https://www.dropbox.com/scl/fi/z97gyhdp64e2ie2xakxcl/A-044.png?rlkey=9a4sc8qxytpms0tbtvllp07jm&st=b7g7fu34&raw=1"]},
+          {Elevation_ID:"A-045",facade_width:"35",facade_width_tolerance:"3",wall_material:["siding"],style:["Modern Southern"],facade_bump:"flat with porch",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["corner_lot","Dormer"],description:"柱子太多了，可以不要右边转过来的porch， 喜欢3个分开的dormer",images:["https://www.dropbox.com/scl/fi/o57ehvhuel9z4t25eqlpm/A-045.png?rlkey=7tn6v2snq571b4dn631vzzk9z&st=2nfi6x3d&raw=1"]},
+          {Elevation_ID:"A-046",facade_width:"35",facade_width_tolerance:"3",wall_material:["siding"],style:["Modern Southern"],facade_bump:"flat with porch",main_roof:"gable",story:"2.5",entry:"front",garage:"",revit_model:false,tags:["corner_lot","Roof","Chimney","Bay_window","Balcony"],description:"roof的拐角不同，减少柱子",images:["https://www.dropbox.com/scl/fi/i1y4keu5e1zzic6pjydhv/A-046.png?rlkey=9f1n3h3lizs7mx1grxljcfaky&st=so4ul9rg&raw=1"]},
+          {Elevation_ID:"A-047",facade_width:"80",facade_width_tolerance:"5",wall_material:["stucco"],style:["traditional"],facade_bump:"bump_center",main_roof:"hip & gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"This is pretty good also, I think the front gable could be a little larger because the three arches seem to a little tight.",images:["https://www.dropbox.com/scl/fi/8cywez67q8h2wvqdnoq7s/A-047.png?rlkey=qibb8e863utwhuxhtn1lvibbn&st=lxkaq61r&raw=1"]},
+          {Elevation_ID:"A-048",facade_width:"80",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_center",main_roof:"hip & gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"简化pediment,立面与其他的五段式不同",images:["https://www.dropbox.com/scl/fi/i1xe8w5zw7xqe3khsk2zb/A-048.png?rlkey=bcnhvrrgfboz9jhj3nqedxz9k&st=rya326gv&raw=1"]},
+          {Elevation_ID:"A-049",facade_width:"80",facade_width_tolerance:"5",wall_material:["brick"],style:["traditional"],facade_bump:"bump_side",main_roof:"hip",story:"2",entry:"front",garage:"",revit_model:false,tags:["symmetry"],description:"不喜欢两个椭圆窗子，顶层不是roof又显得不一样",images:["https://www.dropbox.com/scl/fi/5k8ip3jl55vvd5jqcglru/A-049a.png?rlkey=h2yvb380fwcbbdxbuyeytgojc&st=kaqxkum1&raw=1","https://www.dropbox.com/scl/fi/u2no487skwzvl288bnivm/A-049b.png?rlkey=saksz18ofusq5c1x23cbo9zrm&st=lv4klov7&raw=1"]},
+          {Elevation_ID:"A-050",facade_width:"80",facade_width_tolerance:"5",wall_material:["stone"],style:["traditional"],facade_bump:"bump_center",main_roof:"gable",story:"2",entry:"front",garage:"",revit_model:false,tags:["Parapet"],description:"Like the shed roof here, a little different. chimney怪怪的,改变造型",images:["https://www.dropbox.com/scl/fi/x68rh5qiatiw8t3dey367/A-050a.png?rlkey=um6ud3aad5wjekzh1vkm5fsx0&st=8m3p3cio&raw=1","https://www.dropbox.com/scl/fi/22nf5xjp8cl166qdikckn/A-050b.png?rlkey=1lgj7r4qf9nq3e2r63k3bwpwm&st=fvdttvdn&raw=1"]}
+        ];
 
-const DATA = [
-  {"id":"A-001","elevation_id":"A-001","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":true,"facade_width":70,"facade_width_tolerance":5,"lot_width":110,"lot_depth":null,"wall_material":["brick","siding"],"style":["traditional"],"tags":["gable"],"facade_bump":["bump_double_gable"],"main_roof":[],"description":"John Staub's old house ，Same Staub house but with a different way to get into the garage - we can do two versions， one for the garage and the other for only the main facade on narrower lot\n想办法做 attach garage，好处是下雨不淋雨，可以二楼连通起來，面积更大","images":["https://www.dropbox.com/scl/fi/j9c8wuehx4ksgaguelwdr/A-001a.png?rlkey=ux2j48525x093lzmahzjojv7v&st=7ukeclu4&raw=1","https://www.dropbox.com/scl/fi/cnr3iffxs28pqdu91ewph/A-001b.png?rlkey=jl094yv00n9bjsx9p07zqyec5&st=y6hkd70s&raw=1"]},
-  {"id":"A-002","elevation_id":"A-002","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":50,"facade_width_tolerance":5,"lot_width":110,"lot_depth":null,"wall_material":["siding"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["flat"],"main_roof":[],"description":"LOVE this house on a wider lot and for it to set back a lot","images":["https://www.dropbox.com/scl/fi/xioyvqogmuw6icskr3ifj/A-002.png?rlkey=m3gnpewfv46wvc3kb6pk8wcvm&st=wcmkmyxo&raw=1"]},
-  {"id":"A-003","elevation_id":"A-003","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick","stone"],"style":["traditional"],"tags":["gable","shape"],"facade_bump":["bump"],"main_roof":[],"description":"基本完美","images":["https://www.dropbox.com/scl/fi/3e5cme0fjuks9wl0716p9/A-003.png?rlkey=n06ayaaf55lxwxwxwd1n2oe7y&st=ytznow09&raw=1"]},
-  {"id":"A-004","elevation_id":"A-004","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":true,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry","porte_cochere"],"facade_bump":["bump_center"],"main_roof":[],"description":"very nice, should do one at Celestine for sure\r\n喜欢对称，pediment稍微太大了，右边也可以只做一层","images":["https://www.dropbox.com/scl/fi/i3a893kzjbjjeva4wlj6z/A-004.png?rlkey=dess3lflo17l25nnyd1uqhchl&st=j87i7f1t&raw=1"]},
-  {"id":"A-005","elevation_id":"A-005","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["bump_center"],"main_roof":[],"description":"一层三个窗子，二层两个窗子，不完全对称也很好.Notice the wing is always lower than the main part","images":["https://www.dropbox.com/scl/fi/w9u5kmvrygjkjhxo11b35/A-005.png?rlkey=9boagbram6lx4x4fdxopvnsvb&st=596c0inb&raw=1"]},
-  {"id":"A-006","elevation_id":"A-006","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry","trellis","elevation_flat"],"facade_bump":["flat with porch"],"main_roof":[],"description":"also good, but I would make the front porch more simple.  Please note these are all flat fronts, but adding a little detail like this will change the look","images":["https://www.dropbox.com/scl/fi/r69ptkwujiljm77vhvvl9/A-006.png?rlkey=hp0d8pp1z638ewy4ii19wkes5&st=fo5nd58e&raw=1"]},
-  {"id":"A-007","elevation_id":"A-007","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":75,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["front_door","Porch"],"facade_bump":["flat with porch"],"main_roof":[],"description":"front door很高大，porch也很高，很喜欢","images":["https://www.dropbox.com/scl/fi/06x1d6guap06f8li24za5/A-007.png?rlkey=ftquyn0isdq8r2un5sc13rpwv&st=g1dhv0c3&raw=1"]},
-  {"id":"A-008","elevation_id":"A-008","community":"Lake Celestine","project":"","story":"2","entry":"front","garage":"","revit_model":true,"facade_width":75,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry","gable"],"facade_bump":["bump_side"],"main_roof":[],"description":"Celestine A plus  很喜欢","images":["https://www.dropbox.com/scl/fi/0ts6d4g9iodspiuxa96x2/A-008.png?rlkey=ech8h6lmtrgukcl2h7lxkgr7m&st=mdyutr7n&raw=1"]},
-  {"id":"A-009","elevation_id":"A-009","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":65,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":[],"tags":["plant"],"facade_bump":["flat"],"main_roof":[],"description":"good to repeat很喜欢，加绿植","images":["https://www.dropbox.com/scl/fi/sdrsb57fuf269t2hfmgki/A-009.png?rlkey=v7cgf39xfbu06pkr0sn59l68v&st=3ap7ha16&raw=1"]},
-  {"id":"A-010","elevation_id":"A-010","community":"Lake Celestine,solana hills","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":61,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional","colonial"],"tags":["symmetry"],"facade_bump":["bump_side"],"main_roof":[],"description":"Good elevation for future use especially on large lots like Celestine and solana hills","images":["https://www.dropbox.com/scl/fi/02dl55qw9a7pyglokm3ke/A-010.png?rlkey=xct15t6br2i5jpwr4q283yze6&st=vycyuvku&raw=1"]},
-  {"id":"A-011","elevation_id":"A-011","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":false,"facade_width":60,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional","Southern colonial"],"tags":["Porch","Balcony","Dormer"],"facade_bump":["flat with porch"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/r3rfqxejb3ci3lk21yzb9/A-011.png?rlkey=6p0myzyafv2zvfxmap50biaak&st=ajk3uufb&raw=1"]},
-  {"id":"A-012","elevation_id":"A-012","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":true,"facade_width":60,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional","colonial"],"tags":["symmetry","gable"],"facade_bump":["bump_center"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/5u5hbkjzbwkqel00uxxiz/A-012.png?rlkey=r1t6w55gu62t4fu87ubc9thx6&st=wp1e1isf&raw=1"]},
-  {"id":"A-013","elevation_id":"A-013","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":60,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional","colonial"],"tags":["symmetry","shape","Dormer"],"facade_bump":["bump_side"],"main_roof":[],"description":"I like the shape of this, it is not a perfect even front like the first picture.  This is also very good\r\npitch可以大点，roof高点可能又不一样","images":["https://www.dropbox.com/scl/fi/21heqi0nrls6ifs9q1uij/A-013.png?rlkey=apwihx73v33cvtivkak8u69ui&st=8ihrebfq&raw=1"]},
-  {"id":"A-014","elevation_id":"A-014","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":60,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry","metal_column","Porch"],"facade_bump":["bump_center"],"main_roof":[],"description":"喜欢铁艺的柱子,porch可以多点overhang","images":["https://www.dropbox.com/scl/fi/7ace20ge21l0pi0uhntpr/A-014.png?rlkey=s1bgiti614e8r5yb23h3h1aqf&st=246u3ed0&raw=1"]},
-  {"id":"A-015","elevation_id":"A-015","community":"Verone","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":60,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["bump_side"],"main_roof":[],"description":"Maybe we can do this at Verone, We should do this with all the different floor plans \nfront door 的trim显得不同，两边的trim宽一点可能更好看","images":["https://www.dropbox.com/scl/fi/4lq3zl5xslzaogedhnouc/A-015.png?rlkey=8kfyxc4r80vcxru0cioryu2nj&st=v57i4vy2&raw=1"]},
-  {"id":"A-016","elevation_id":"A-016","community":"","project":"","story":"2","entry":"front","garage":"side","revit_model":true,"facade_width":53,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["banding","corner"],"facade_bump":["bump_side"],"main_roof":[],"description":"看上去对称，其实不对称，很舒服，喜欢这种banding不希望做stucoo全部做brick","images":["https://www.dropbox.com/scl/fi/mm6yb9zmpjf6fhy6tbvcc/A-016.png?rlkey=41kll7xev7uxxb0lcsgxgmher&st=jjrukw4r&raw=1"]},
-  {"id":"A-017","elevation_id":"A-017","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":50,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco","siding"],"style":["traditional"],"tags":["gable","shape"],"facade_bump":["bump_center"],"main_roof":[],"description":"去掉右边完美","images":["https://www.dropbox.com/scl/fi/5kr7x46wdnvwvlvfdzg0y/A-017.png?rlkey=z10dq08b0fbx0d9edr8zp71pp&st=tcwoh9bv&raw=1"]},
-  {"id":"A-018","elevation_id":"A-018","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":50,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["steps","symmetry"],"facade_bump":["flat"],"main_roof":[],"description":"喜欢台阶上去","images":["https://www.dropbox.com/scl/fi/cly7bzjqs4c8g9m3vz008/A-018.png?rlkey=jhxnqwn0t2hvhayt64vosy0bg&st=lhba7dq1&raw=1"]},
-  {"id":"A-019","elevation_id":"A-019","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":50,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["traditional"],"tags":["symmetry","Dormer","cornice"],"facade_bump":["flat"],"main_roof":[],"description":"dormer的gable太窄了，做宽一點，注意cornice detail","images":["https://www.dropbox.com/scl/fi/an2znjpph77p29we02w76/A-019.png?rlkey=1cjgwyf3xf6eaq0hmz0ac3yqb&st=9ppadp5s&raw=1"]},
-  {"id":"A-020","elevation_id":"A-020","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":50,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["flat"],"main_roof":[],"description":"This is almost perfect","images":["https://www.dropbox.com/scl/fi/yu6bucree8v6gdd3kjt5x/A-020.png?rlkey=iq8ucfpjkfuehntj7m9ltc4xs&st=vezpqbdq&raw=1"]},
-  {"id":"A-021","elevation_id":"A-021","community":"","project":"","story":"2","entry":"front","garage":"front","revit_model":true,"facade_width":50,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry","gable"],"facade_bump":["bump_center"],"main_roof":[],"description":"main part of the house is good, expect the front pediment is too light and I do not want to see the little roof\nporch recess最多3.5'， key stone可以尝试","images":["https://www.dropbox.com/scl/fi/nur9fzy9xhdmnlwa4f21y/A-021.png?rlkey=y0oqes9isvuh9gbm330b46fxp&st=a0q0raj8&raw=1"]},
-  {"id":"A-022","elevation_id":"A-022","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":false,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry","Dormer"],"facade_bump":["flat"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/ejoro0wc74o82im2u3ewc/A-022.png?rlkey=9pzwwxl1767oni1ykpuibbz73&st=ielt6438&raw=1"]},
-  {"id":"A-023","elevation_id":"A-023","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":false,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["different_plate","Dormer","front_yard"],"facade_bump":["bump_side"],"main_roof":[],"description":"喜欢最左侧的院墙，左边一层半可以更高一点，dormer太大了，把band提高。","images":["https://www.dropbox.com/scl/fi/22ae2v8jvsmc8v0qtlfer/A-023.png?rlkey=du45pqugl57qwf01d8t3nzdxm&st=dqobqtnm&raw=1"]},
-  {"id":"A-024","elevation_id":"A-024","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":true,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick","siding"],"style":["traditional"],"tags":["recess","front_yard","shutter"],"facade_bump":["bump_side"],"main_roof":[],"description":"perfect! Can be done in siding\r\n左边recess变得不同，也可以recess更多，做一个侧前院+gate  二层shutter无效保护","images":["https://www.dropbox.com/scl/fi/r1id8orjzege11s4u603y/A-024.png?rlkey=xhh3regxqk89qnlxf14smmvas&st=ezmly6kn&raw=1"]},
-  {"id":"A-025","elevation_id":"A-025","community":"","project":"","story":"2","entry":"front","garage":"side","revit_model":false,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick","siding"],"style":["traditional"],"tags":["gable","shutter","hide_garage"],"facade_bump":["bump_double_gable"],"main_roof":[],"description":"Like this house, we built this in 1998.   The pediment could be a little better.\nporch可以宽一点，shutter无效保护，加wing wall挡一下车库","images":["https://www.dropbox.com/scl/fi/ds5qs1x2nlfrd67lyuyek/A-025.png?rlkey=nt7dljftysjcy1f32dzfdmfs7&st=kggi7dmw&raw=1"]},
-  {"id":"A-026","elevation_id":"A-026","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick","siding"],"style":["traditional"],"tags":["gable","Bay_window"],"facade_bump":["bump_double_gable"],"main_roof":[],"description":"bay一般是木头做的，中间gable的窗子可以大一点","images":["https://www.dropbox.com/scl/fi/tv4ts0lao6kapalgfhlrb/A-026.png?rlkey=5hgalkunqs72mfk7zowdx5508&st=jgyb1r9q&raw=1"]},
-  {"id":"A-027","elevation_id":"A-027","community":"","project":"","story":"2.5","entry":"front","garage":"","revit_model":false,"facade_width":42,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["brick","metal siding"],"style":[],"tags":["Porch","Chimney"],"facade_bump":["bump_side"],"main_roof":[],"description":"porch可以做flat roof，烟囱改变造型","images":["https://www.dropbox.com/scl/fi/t2953iezrnanr99cjbt0q/A-027.png?rlkey=njbj9nl6uyebx3nnmzihj9jx9&st=8ojut3pf&raw=1"]},
-  {"id":"A-028","elevation_id":"A-028","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":40,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["Charleston"],"tags":["side_yard","side_balcony"],"facade_bump":["bump_side"],"main_roof":[],"description":"Charleston house is a house with door to the side and has a nice size side courtyard,Windows are ok instead of French doors\r\ndormer可以做得更好,overhang太大","images":["https://www.dropbox.com/scl/fi/mzufz4oqaeorsip15c0jm/A-028.png?rlkey=xetmm7d08d9ccudtl417upwz7&st=3dv45tw9&raw=1"]},
-  {"id":"A-029","elevation_id":"A-029","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":40,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["Charleston"],"tags":["Parapet","side_yard"],"facade_bump":["bump_side"],"main_roof":[],"description":"左侧装饰好看，parapet wall造型上面的线条可以多一点","images":["https://www.dropbox.com/scl/fi/kjunmsc2tz4zvudq77lu7/A-029.png?rlkey=lailtt93idaojb95jt9zsjmp6&st=uhh77gj6&raw=1"]},
-  {"id":"A-030","elevation_id":"A-030","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":36,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry","Dormer"],"facade_bump":["flat with porch"],"main_roof":[],"description":"column太细","images":["https://www.dropbox.com/scl/fi/mdacigbsc3ef2lhyei97z/A-030.png?rlkey=2buu03bigvst06pr2cewb7xom&st=ww1aenbp&raw=1"]},
-  {"id":"A-031","elevation_id":"A-031","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":35,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["Modern Southern"],"tags":["Porch","gable"],"facade_bump":["bump with porch"],"main_roof":[],"description":"vent可以变小一些","images":["https://www.dropbox.com/scl/fi/ys2b2xodrjrp8vzplj8l6/A-031.png?rlkey=twygfux40a0nk0go2r2jouv98&st=o9z4rhtm&raw=1"]},
-  {"id":"A-032","elevation_id":"A-032","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":35,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["townhouse"],"tags":["symmetry"],"facade_bump":["flat with porch"],"main_roof":[],"description":"No need to copy 100 Percent but there are essential elements that I like about each of the homes \nporch又高又细不好看，可以把porch变宽或者不要porch","images":["https://www.dropbox.com/scl/fi/r9lhxwpdbxoi9b611khc5/A-032.png?rlkey=jho30ynct7nxpek080ouxcjt5&st=qiedmgw4&raw=1"]},
-  {"id":"A-033","elevation_id":"A-033","community":"","project":"","story":"3","entry":"front","garage":"","revit_model":false,"facade_width":22,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["siding","brick"],"style":["townhouse"],"tags":["balcony"],"facade_bump":["flat"],"main_roof":[],"description":"喜欢第一个balcony凸出去，一层加高更好看。不喜欢第三个立面","images":["https://www.dropbox.com/scl/fi/05wmg69ic7ndkfp3tq3qm/A-033.png?rlkey=1h9xlyskxxgyoprab31u6duxu&st=sd6rhpy4&raw=1"]},
-  {"id":"A-034","elevation_id":"A-034","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":55,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["Modern Southern"],"tags":["corner_lot","Porch","Balcony"],"facade_bump":["flat with porch"],"main_roof":[],"description":"sunroom很貴，二层可以做french door出来做个deck","images":["https://www.dropbox.com/scl/fi/nrp1mxscko01oz3wnrnfh/A-034.png?rlkey=7fxbdgip1im0ghe58sg5ocpah&st=8uyj6l0g&raw=1"]},
-  {"id":"A-035","elevation_id":"A-035","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":false,"facade_width":50,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["Porch","shape","Chimney","corner_lot"],"facade_bump":["bump_side"],"main_roof":[],"description":"假的chimney很好。front door可以根据平面需要做不同的位置","images":["https://www.dropbox.com/scl/fi/isl3e2v7fncst1p4zw436/A-035.png?rlkey=f53km794098h7nghj0mah7g2u&st=5pzex2rv&raw=1"]},
-  {"id":"A-036","elevation_id":"A-036","community":"","project":"","story":"2","entry":"front","garage":"rear","revit_model":false,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["shape","Chimney","corner_lot","pitch_change"],"facade_bump":["bump_side"],"main_roof":[],"description":"Love this and like the shape, but we can do better\n不同的chimney cap，喜欢pitch change","images":["https://www.dropbox.com/scl/fi/sa1fbwqaz7vvupfdfebph/A-036.png?rlkey=qab8q6koirlt8p3swek930i4e&st=sbzzuasc&raw=1"]},
-  {"id":"A-037","elevation_id":"A-037","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["Chimney","corner_lot","Porch"],"facade_bump":["bump with porch"],"main_roof":[],"description":"很漂亮，但柱子太多太貴了，烟囱可以做造型","images":["https://www.dropbox.com/scl/fi/vtjwis147fwxro6rrjfs2/A-037.png?rlkey=vd0c6iez69unyzj6g2sfocowp&st=v5kmjp87&raw=1"]},
-  {"id":"A-038","elevation_id":"A-038","community":"","project":"","story":"1.5","entry":"front","garage":"","revit_model":false,"facade_width":30,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":[],"tags":["corner_lot","Porch","flat_roof"],"facade_bump":["flat with porch"],"main_roof":[],"description":"Love to do this at the next busy corners or street facing Kolbe, Crosby fronting at Carrollton, Eastwood, lake pointe\n可以照抄，喜欢一层的flat roof，一楼很高，阳光充足。","images":["https://www.dropbox.com/scl/fi/xa7jjscgq4tv69awzx6kn/A-038.png?rlkey=tswskuufe4iw6jsopew4gcxsu&st=l3yp9f2l&raw=1"]},
-  {"id":"A-039","elevation_id":"A-039","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":[],"tags":["corner_lot","different_plate"],"facade_bump":["bump with porch"],"main_roof":[],"description":"有二层，有tower的三层，高度有变化","images":["https://www.dropbox.com/scl/fi/8deeegacntecog70968a4/A-039.png?rlkey=t4otz534zy6c319b0w9u3297p&st=5a7hmsq8&raw=1"]},
-  {"id":"A-040","elevation_id":"A-040","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":65,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":[],"tags":["corner_lot","Porch","porte_cochere"],"facade_bump":["bump with porch"],"main_roof":[],"description":"L型的porch，主roof可以调高","images":["https://www.dropbox.com/scl/fi/hnsf60n2haklfui9upieo/A-040.png?rlkey=7jq002wdlftyvv04yv7jehybi&st=0t4vsskq&raw=1"]},
-  {"id":"A-041","elevation_id":"A-041","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":60,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":[],"tags":["corner_lot","Porch","Bay_window"],"facade_bump":["bump with porch"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/85k07frh5i1bp8tlpf3jl/A-041.png?rlkey=mnbt27ac5c9y4jlgdffr3l0wd&st=oo4f4ufm&raw=1"]},
-  {"id":"A-042","elevation_id":"A-042","community":"RAVENNA","project":"7503 Viano Lane","story":"2","entry":"front","garage":"rear","revit_model":false,"facade_width":47,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":[],"tags":["corner_lot","Porch","side_yard","Chimney"],"facade_bump":["bump with porch"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/x21xx37bym4676cu5xzjh/A-042.png?rlkey=nkddlvd2d6q4jexujbygw18cx&st=7slqltt1&raw=1"]},
-  {"id":"A-043","elevation_id":"A-043","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":45,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["Modern Southern"],"tags":["corner_lot","Porch","side_yard","Chimney"],"facade_bump":["bump with porch"],"main_roof":[],"description":"façade&flat bay window\nL型porch不一樣但是贵，bay window不太一样，柱子太多，chinmey需要改变造型，shutter太多，房子加高可能更好看","images":["https://www.dropbox.com/scl/fi/d9qcz112vwcv352jze6uf/A-043.png?rlkey=v6nxrh8tngm9poipowzyg9vwg&st=itw0pdgd&raw=1"]},
-  {"id":"A-044","elevation_id":"A-044","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":35,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["Modern Southern"],"tags":["corner_lot","Chimney","Porch","Balcony"],"facade_bump":["bump with porch"],"main_roof":[],"description":"烟囱很好看,porch+balcony也很好","images":["https://www.dropbox.com/scl/fi/z97gyhdp64e2ie2xakxcl/A-044.png?rlkey=9a4sc8qxytpms0tbtvllp07jm&st=b7g7fu34&raw=1"]},
-  {"id":"A-045","elevation_id":"A-045","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":35,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["Modern Southern"],"tags":["corner_lot","Dormer","Porch"],"facade_bump":["flat with porch"],"main_roof":[],"description":"柱子太多了，可以不要右边转过来的porch，\n喜欢3个分开的dormer","images":["https://www.dropbox.com/scl/fi/o57ehvhuel9z4t25eqlpm/A-045.png?rlkey=7tn6v2snq571b4dn631vzzk9z&st=2nfi6x3d&raw=1"]},
-  {"id":"A-046","elevation_id":"A-046","community":"","project":"","story":"2.5","entry":"front","garage":"","revit_model":false,"facade_width":35,"facade_width_tolerance":3,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["Modern Southern"],"tags":["corner_lot","Roof","Chimney","Bay_window","Porch","Balcony"],"facade_bump":["flat with porch"],"main_roof":[],"description":"roof的拐角不同，减少柱子","images":["https://www.dropbox.com/scl/fi/i1y4keu5e1zzic6pjydhv/A-046.png?rlkey=9f1n3h3lizs7mx1grxljcfaky&st=so4ul9rg&raw=1"]},
-  {"id":"A-047","elevation_id":"A-047","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["siding"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["bump_center"],"main_roof":[],"description":"This is pretty good also, I think the front gable could be a little larger because the three arches seem to a little tight.","images":["https://www.dropbox.com/scl/fi/8cywez67q8h2wvqdnoq7s/A-047.png?rlkey=qibb8e863utwhuxhtn1lvibbn&st=lxkaq61r&raw=1"]},
-  {"id":"A-048","elevation_id":"A-048","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["bump_center"],"main_roof":[],"description":"简化pediment,立面与其他的五段式不同","images":["https://www.dropbox.com/scl/fi/i1xe8w5zw7xqe3khsk2zb/A-048.png?rlkey=bcnhvrrgfboz9jhj3nqedxz9k&st=rya326gv&raw=1"]},
-  {"id":"A-049","elevation_id":"A-049","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["bump_center"],"main_roof":[],"description":"不喜欢两个椭圆窗子，顶层不是roof又显得不一样","images":["https://www.dropbox.com/scl/fi/5k8ip3jl55vvd5jqcglru/A-049a.png?rlkey=h2yvb380fwcbbdxbuyeytgojc&st=kaqxkum1&raw=1","https://www.dropbox.com/scl/fi/u2no487skwzvl288bnivm/A-049b.png?rlkey=saksz18ofusq5c1x23cbo9zrm&st=lv4klov7&raw=1"]},
-  {"id":"A-050","elevation_id":"A-050","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stone"],"style":["traditional"],"tags":["Parapet"],"facade_bump":["bump_center"],"main_roof":[],"description":"Like the shed roof here, a little different\nchimney怪怪的,改变造型","images":["https://www.dropbox.com/scl/fi/x68rh5qiatiw8t3dey367/A-050a.png?rlkey=um6ud3aad5wjekzh1vkm5fsx0&st=8m3p3cio&raw=1","https://www.dropbox.com/scl/fi/22nf5xjp8cl166qdikckn/A-050b.png?rlkey=1lgj7r4qf9nq3e2r63k3bwpwm&st=fvdttvdn&raw=1"]},
-  {"id":"A-051","elevation_id":"A-051","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["Bay_window"],"facade_bump":["bump"],"main_roof":[],"description":"Like the bay window","images":["https://www.dropbox.com/scl/fi/m8eqf6yekiyuswg96vkyp/A-051.png?rlkey=x1kxpfy32wep3q5xh077me9cn&st=nv8hq1p9&raw=1"]},
-  {"id":"A-052","elevation_id":"A-052","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stone"],"style":[],"tags":["gable","Entry"],"facade_bump":["bump"],"main_roof":[],"description":"Like the gable front entry - a little different \n不对称的gable显得不同，缺点entry太宽","images":["https://www.dropbox.com/scl/fi/up76e4lkrxjqwk4cakru4/A-052.png?rlkey=56vriqvtnmxuuauu8y40ogw4v&st=0usfj8dz&raw=1"]},
-  {"id":"A-053","elevation_id":"A-053","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":[],"facade_bump":["flat with porch"],"main_roof":[],"description":"roof不太一样，可以try tpo roof,左边可以多recess","images":["https://www.dropbox.com/scl/fi/qenotibclg9y34l9r90vh/A-053.png?rlkey=xmpzprksegue6s19ihs1dou5c&st=ftss88os&raw=1"]},
-  {"id":"A-054","elevation_id":"A-054","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["symmetry","Balcony","french_door"],"facade_bump":["bump_side"],"main_roof":[],"description":"很贵的房子，喜欢大的balcony，french door+side light","images":["https://www.dropbox.com/scl/fi/d6wykg6uje71k81o2gvnj/A-054.png?rlkey=c7erow7peteszgi3b4s2wsg56&st=j5vzk9wv&raw=1"]},
-  {"id":"A-055","elevation_id":"A-055","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["brick"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["bump_side"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/o8xxxcpsymllbvkx206en/A-055.png?rlkey=v5pxx9tcp59nsy82khqmaev4d&st=nnrucpfs&raw=1"]},
-  {"id":"A-056","elevation_id":"A-056","community":"","project":"","story":"3","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["Column"],"facade_bump":["bump_center"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/535gp0fu74h6yhod04379/A-056.png?rlkey=smuc3w49hpb91j4s1gvss7b0o&st=xphjgvzl&raw=1"]},
-  {"id":"A-057 -","elevation_id":"A-057","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["Porch","Balcony"],"facade_bump":["bump_side"],"main_roof":[],"description":"","images":["https://www.dropbox.com/scl/fi/xifgkjm3a934mpdy50p1q/A-057.png?rlkey=0m9m477sr6kwifsaua5tqm5jj&st=otvxt6qx&raw=1"]},
-  {"id":"A-058","elevation_id":"A-058","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":[],"facade_bump":["bump_side"],"main_roof":[],"description":"去掉左边，看中间部分","images":["https://www.dropbox.com/scl/fi/bgizchjjih8nfjjdq4e8h/A-058.png?rlkey=fz2hvi638pleg6l967oiiiiv1&st=2f7ycejx&raw=1"]},
-  {"id":"A-059","elevation_id":"A-059","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":["symmetry"],"facade_bump":["bump_side"],"main_roof":[],"description":"也可以去掉两个小窗子窄的部分，用到窄一点的lot上","images":["https://www.dropbox.com/scl/fi/4ave381ixu38ilequq06e/A-059.png?rlkey=vb2yueng21epxsp1gw7jr090z&st=773hsmx7&raw=1"]},
-  {"id":"A-060","elevation_id":"A-060","community":"","project":"","story":"2","entry":"front","garage":"","revit_model":false,"facade_width":80,"facade_width_tolerance":5,"lot_width":null,"lot_depth":null,"wall_material":["stucco"],"style":["traditional"],"tags":[],"facade_bump":["bump_side"],"main_roof":[],"description":"Celestine large homes\n左右两边不是完全对称但也不难看，front door上的roof太单薄","images":["https://www.dropbox.com/scl/fi/hg9tbewblujn5gmfnaz4f/A-060.png?rlkey=2hhtn0xyfx787ueugzamwey5v&st=ahczs2ky&raw=1"]},
-];
-
-// ============================================================
-// STATE
-// ============================================================
-const state = {
-    filters: {
-        community: [], story: "", wall_material: [], style: [],
-        tags: [], project: "", entry: "", garage: "",
-        revit_model: "", facade_bump: [], main_roof: [],
-        fw_target: null,
-    },
-    sort: CONFIG.DEFAULT_SORT,
-    filtered: []
-};
-
-// ============================================================
-// MULTI-SELECT COMPONENT (with OR/AND toggle)
-// ============================================================
-const allMS = [];
-
-function closeAllDD() {
-    allMS.forEach(m => m.close());
-    document.getElementById("sortMenu").classList.remove("open");
-}
-document.addEventListener("click", e => {
-    if (!e.target.closest(".ms-dropdown") && !e.target.closest(".sort-dd")) closeAllDD();
-});
-
-class MultiSelect {
-    constructor(parent, opts) {
-        this.key = opts.key;
-        this.options = opts.options;
-        this.selected = new Set();
-        this.mode = 'or';  // 'or' | 'and'
-        this.hasAndOr = opts.hasAndOr || false;
-
-        const w = document.createElement("div");
-        w.className = "ms-dropdown";
-
-        const modeHtml = this.hasAndOr ? `
-            <div class="ms-mode">
-                <button class="ms-mode-btn active-or" data-mode="or">任一 OR</button>
-                <button class="ms-mode-btn" data-mode="and">全部 AND</button>
-            </div>` : '';
-
-        w.innerHTML = `
-            <span class="ms-label">${opts.icon} ${opts.label}</span>
-            <div class="ms-trigger"><span class="ph">— 全部 —</span><span class="arrow">▾</span></div>
-            <div class="ms-panel">
-                <div class="ms-search"><input type="text" placeholder="搜索..."></div>
-                ${modeHtml}
-                <div class="ms-opts"></div>
-                <div class="ms-actions"><button class="sa">全选</button><button class="ca">清除</button></div>
-            </div>`;
-        parent.appendChild(w);
-
-        this.el = w;
-        this.trigger = w.querySelector(".ms-trigger");
-        this.panel = w.querySelector(".ms-panel");
-        this.searchInp = w.querySelector(".ms-search input");
-        this.optsDiv = w.querySelector(".ms-opts");
-        this.modeContainer = w.querySelector(".ms-mode");
-
-        this.renderOpts();
-
-        this.trigger.addEventListener("click", e => { e.stopPropagation(); this.toggle(); });
-        this.searchInp.addEventListener("input", () => this.renderOpts());
-        w.querySelector(".sa").addEventListener("click", () => {
-            this.options.forEach(o => this.selected.add(o));
-            this.renderOpts(); this.updTrigger(); this.fire();
-        });
-        w.querySelector(".ca").addEventListener("click", () => {
-            this.selected.clear();
-            this.renderOpts(); this.updTrigger(); this.fire();
+        var DATA = sampleData.map(function(d) {
+            var fb = d.facade_bump;
+            var mr = d.main_roof;
+            if (typeof fb === "string") fb = fb ? [fb] : [];
+            if (typeof mr === "string") mr = mr ? [mr] : [];
+            return {
+                id: d.Elevation_ID || d.file.name,
+                elevation_id: d.Elevation_ID || d.file.name,
+                community: Array.isArray(d.community) ? d.community[0] || "" : d.community || "",
+                project: Array.isArray(d.project) ? d.project[0] || "" : d.project || "",
+                story: d.story || "",
+                entry: d.entry || "",
+                garage: d.garage || "",
+                revit_model: d.revit_model || false,
+                facade_width: d.facade_width ? parseFloat(d.facade_width) : null,
+                facade_width_tolerance: d.facade_width_tolerance ? parseFloat(d.facade_width_tolerance) : 0,
+                lot_width: null,
+                lot_depth: null,
+                wall_material: d.wall_material || [],
+                style: d.style || [],
+                tags: d.tags || [],
+                facade_bump: fb,
+                main_roof: mr,
+                description: d.description || "",
+                images: d.images || []
+            };
         });
 
-        // OR/AND toggle
-        if (this.hasAndOr && this.modeContainer) {
-            this.modeContainer.querySelectorAll('.ms-mode-btn').forEach(btn => {
-                btn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    this.mode = btn.dataset.mode;
-                    this.modeContainer.querySelectorAll('.ms-mode-btn').forEach(b => {
-                        b.classList.remove('active-or', 'active-and');
+        // ============================================================
+        // OPTION LISTS
+        // ============================================================
+        var COMMUNITIES = [];
+        var PROJECTS = [];
+        var STORY_OPTS = [];
+        var ENTRY_OPTS = [];
+        var GARAGE_OPTS = [];
+        var WALL_MATS = [];
+        var STYLES = [];
+        var ALL_TAGS = [];
+        var BUMPS = [];
+        var ROOFS = [];
+
+        (function buildOptions() {
+            var sets = {community:new Set(),project:new Set(),story:new Set(),entry:new Set(),garage:new Set(),wall_material:new Set(),style:new Set(),tags:new Set(),facade_bump:new Set(),main_roof:new Set()};
+            DATA.forEach(function(d) {
+                if (d.community) sets.community.add(d.community);
+                if (d.project) sets.project.add(d.project);
+                if (d.story) sets.story.add(d.story);
+                if (d.entry) sets.entry.add(d.entry);
+                if (d.garage) sets.garage.add(d.garage);
+                d.wall_material.forEach(function(v){sets.wall_material.add(v);});
+                d.style.forEach(function(v){sets.style.add(v);});
+                d.tags.forEach(function(v){sets.tags.add(v);});
+                d.facade_bump.forEach(function(v){sets.facade_bump.add(v);});
+                d.main_roof.forEach(function(v){sets.main_roof.add(v);});
+            });
+            COMMUNITIES = Array.from(sets.community).sort();
+            PROJECTS = Array.from(sets.project).sort();
+            STORY_OPTS = Array.from(sets.story).sort(function(a,b){return parseFloat(a)-parseFloat(b);});
+            ENTRY_OPTS = Array.from(sets.entry).sort();
+            GARAGE_OPTS = Array.from(sets.garage).sort();
+            WALL_MATS = Array.from(sets.wall_material).sort();
+            STYLES = Array.from(sets.style).sort();
+            ALL_TAGS = Array.from(sets.tags).sort();
+            BUMPS = Array.from(sets.facade_bump).sort();
+            ROOFS = Array.from(sets.main_roof).sort();
+        })();
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        var state = {
+            filters: {
+                community:[], story:"", wall_material:[], style:[],
+                tags:[], project:"", entry:"", garage:"",
+                revit_model:"", facade_bump:[], main_roof:[],
+                fw_target: null
+            },
+            sort: CONFIG.DEFAULT_SORT,
+            filtered: []
+        };
+
+        // ============================================================
+        // MULTI-SELECT
+        // ============================================================
+        var allMS = [];
+
+        function closeAllDD() {
+            allMS.forEach(function(m){ m.close(); });
+            document.getElementById("sortMenu").classList.remove("open");
+        }
+        document.addEventListener("click", function(e) {
+            if (!e.target.closest(".ms-dropdown") && !e.target.closest(".sort-dd")) closeAllDD();
+        });
+
+        function MultiSelect(parent, opts) {
+            var self = this;
+            self.key = opts.key;
+            self.options = opts.options;
+            self.selected = new Set();
+            self.mode = "or";
+            self.hasAndOr = opts.hasAndOr || false;
+
+            var w = document.createElement("div");
+            w.className = "ms-dropdown";
+
+            var modeHtml = self.hasAndOr ?
+                '<div class="ms-mode">' +
+                '<button class="ms-mode-btn sel-or" data-mode="or">任一 OR</button>' +
+                '<button class="ms-mode-btn" data-mode="and">全部 AND</button>' +
+                '</div>' : '';
+
+            w.innerHTML =
+                '<span class="ms-label">' + opts.icon + ' ' + opts.label + '</span>' +
+                '<div class="ms-trigger"><span class="ph">\u2014 全部 \u2014</span><span class="arrow">\u25BE</span></div>' +
+                '<div class="ms-panel">' +
+                '<div class="ms-search"><input type="text" placeholder="搜索..."></div>' +
+                modeHtml +
+                '<div class="ms-opts"></div>' +
+                '<div class="ms-actions"><button class="sa">全选</button><button class="ca">清除</button></div>' +
+                '</div>';
+            parent.appendChild(w);
+
+            self.el = w;
+            self.trigger = w.querySelector(".ms-trigger");
+            self.panel = w.querySelector(".ms-panel");
+            self.searchInp = w.querySelector(".ms-search input");
+            self.optsDiv = w.querySelector(".ms-opts");
+            self.modeContainer = w.querySelector(".ms-mode");
+
+            self.renderOpts();
+
+            self.trigger.addEventListener("click", function(e) { e.stopPropagation(); self.toggle(); });
+            self.searchInp.addEventListener("input", function() { self.renderOpts(); });
+            w.querySelector(".sa").addEventListener("click", function() {
+                self.options.forEach(function(o){ self.selected.add(o); });
+                self.renderOpts(); self.updTrigger(); self.fire();
+            });
+            w.querySelector(".ca").addEventListener("click", function() {
+                self.selected.clear();
+                self.renderOpts(); self.updTrigger(); self.fire();
+            });
+
+            if (self.hasAndOr && self.modeContainer) {
+                self.modeContainer.querySelectorAll(".ms-mode-btn").forEach(function(btn) {
+                    btn.addEventListener("click", function(e) {
+                        e.stopPropagation();
+                        self.mode = btn.dataset.mode;
+                        self.modeContainer.querySelectorAll(".ms-mode-btn").forEach(function(b) {
+                            b.classList.remove("sel-or","sel-and");
+                        });
+                        btn.classList.add(self.mode === "or" ? "sel-or" : "sel-and");
+                        self.updTrigger();
+                        self.fire();
                     });
-                    btn.classList.add(this.mode === 'or' ? 'active-or' : 'active-and');
-                    this.updTrigger();
-                    this.fire();
+                });
+            }
+        }
+
+        MultiSelect.prototype.renderOpts = function() {
+            var self = this;
+            var q = self.searchInp.value.toLowerCase();
+            var list = self.options.filter(function(o){ return o.toLowerCase().indexOf(q) >= 0; });
+            self.optsDiv.innerHTML = list.map(function(o) {
+                var esc = o.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+                return '<label class="ms-opt"><input type="checkbox" value="' + esc + '"' + (self.selected.has(o)?" checked":"") + '>' + esc + '</label>';
+            }).join("");
+            self.optsDiv.querySelectorAll("input").forEach(function(inp) {
+                inp.addEventListener("change", function() {
+                    if (inp.checked) self.selected.add(inp.value); else self.selected.delete(inp.value);
+                    self.updTrigger(); self.fire();
+                });
+            });
+        };
+
+        MultiSelect.prototype.updTrigger = function() {
+            var n = this.selected.size;
+            if (n === 0) {
+                this.trigger.innerHTML = '<span class="ph">\u2014 全部 \u2014</span><span class="arrow">\u25BE</span>';
+            } else {
+                var isAnd = this.hasAndOr && this.mode === "and";
+                var cls = isAnd ? "badge-and" : "badge";
+                var label = isAnd ? n + " 已选 AND" : n + " 已选";
+                this.trigger.innerHTML = '<span class="' + cls + '">' + label + '</span><span class="arrow">\u25BE</span>';
+            }
+        };
+
+        MultiSelect.prototype.toggle = function() {
+            var self = this;
+            var open = self.panel.classList.contains("open");
+            closeAllDD();
+            if (!open) {
+                self.panel.classList.add("open");
+                self.trigger.classList.add("active");
+                setTimeout(function(){ self.searchInp.focus(); }, 50);
+            }
+        };
+
+        MultiSelect.prototype.close = function() {
+            this.panel.classList.remove("open");
+            this.trigger.classList.remove("active");
+        };
+
+        MultiSelect.prototype.reset = function() {
+            this.selected.clear();
+            this.searchInp.value = "";
+            this.mode = "or";
+            if (this.hasAndOr && this.modeContainer) {
+                this.modeContainer.querySelectorAll(".ms-mode-btn").forEach(function(btn) {
+                    btn.classList.remove("sel-or","sel-and");
+                    if (btn.dataset.mode === "or") btn.classList.add("sel-or");
+                });
+            }
+            this.renderOpts();
+            this.updTrigger();
+        };
+
+        MultiSelect.prototype.fire = function() {
+            state.filters[this.key] = Array.from(this.selected);
+            applyFilters();
+        };
+
+        // ============================================================
+        // BUILD FILTERS
+        // ============================================================
+        function buildFilters() {
+            var grid = document.getElementById("filterGrid");
+            grid.innerHTML = "";
+
+            var multiDefs = [
+                {key:"community",label:"Community 社区",icon:"\uD83D\uDCCD",options:COMMUNITIES,hasAndOr:false},
+                {key:"wall_material",label:"Wall Material 墙体材料",icon:"\uD83E\uDDF1",options:WALL_MATS,hasAndOr:true},
+                {key:"style",label:"Style 风格",icon:"\uD83C\uDFA8",options:STYLES,hasAndOr:true},
+                {key:"tags",label:"Tags 标签",icon:"\uD83C\uDFF7\uFE0F",options:ALL_TAGS,hasAndOr:true},
+                {key:"facade_bump",label:"Facade Bump 凸起",icon:"\uD83D\uDCCA",options:BUMPS,hasAndOr:true},
+                {key:"main_roof",label:"Main Roof 主屋顶",icon:"\uD83C\uDFE0",options:ROOFS,hasAndOr:true}
+            ];
+
+            multiDefs.forEach(function(d) {
+                if (d.options.length === 0) return;
+                var div = document.createElement("div");
+                grid.appendChild(div);
+                allMS.push(new MultiSelect(div, d));
+            });
+
+            var singleDefs = [
+                {key:"story",label:"Story 层数",icon:"\uD83C\uDFE2",options:STORY_OPTS},
+                {key:"project",label:"Project 项目",icon:"\uD83C\uDFD7\uFE0F",options:PROJECTS},
+                {key:"entry",label:"Entry 入口",icon:"\uD83D\uDEAA",options:ENTRY_OPTS},
+                {key:"garage",label:"Garage 车库",icon:"\uD83D\uDE97",options:GARAGE_OPTS}
+            ];
+
+            singleDefs.forEach(function(d) {
+                if (d.options.length === 0) return;
+                var div = document.createElement("div");
+                var optHtml = d.options.map(function(o){ return '<option value="'+o+'">'+o+'</option>'; }).join("");
+                div.innerHTML =
+                    '<span class="ms-label">' + d.icon + ' ' + d.label + '</span>' +
+                    '<select data-key="' + d.key + '" class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" style="min-height:38px">' +
+                    '<option value="">\u2014 全部 \u2014</option>' + optHtml + '</select>';
+                grid.appendChild(div);
+                div.querySelector("select").addEventListener("change", function(e) {
+                    state.filters[e.target.dataset.key] = e.target.value;
+                    applyFilters();
+                });
+            });
+
+            // Revit
+            var rv = document.createElement("div");
+            rv.innerHTML =
+                '<span class="ms-label">\uD83D\uDCD0 Revit Model</span>' +
+                '<select data-key="revit_model" class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" style="min-height:38px">' +
+                '<option value="">\u2014 全部 \u2014</option>' +
+                '<option value="true">\u2705 有</option>' +
+                '<option value="false">\u274C 无</option></select>';
+            grid.appendChild(rv);
+            rv.querySelector("select").addEventListener("change", function(e) {
+                state.filters.revit_model = e.target.value;
+                applyFilters();
+            });
+
+            // Facade Width target
+            var rDiv = document.getElementById("rangeFilters");
+            rDiv.innerHTML =
+                '<div>' +
+                '<span class="ms-label">\uD83C\uDFE0 Facade Width 目标宽度 (ft)</span>' +
+                '<div class="rg-group"><input type="number" class="rg-input" placeholder="输入目标宽度，如 68" id="fwTarget" step="1"></div>' +
+                '<div style="font-size:10px;color:#9ca3af;margin-top:3px;">自动使用每条笔记的 facade_width_tolerance 匹配</div>' +
+                '</div>';
+            document.getElementById("fwTarget").addEventListener("input", function(e) {
+                state.filters.fw_target = e.target.value !== "" ? parseFloat(e.target.value) : null;
+                applyFilters();
+            });
+        }
+
+        // ============================================================
+        // SORT
+        // ============================================================
+        var SORTS = [
+            {key:"id_asc",  label:"ID \u2191",  icon:"\uD83D\uDD24"},
+            {key:"id_desc", label:"ID \u2193",  icon:"\uD83D\uDD24"},
+            {key:"fw_asc",  label:"Facade Width \u2191 窄\u2192宽", icon:"\uD83D\uDCD0"},
+            {key:"fw_desc", label:"Facade Width \u2193 宽\u2192窄", icon:"\uD83D\uDCD0"}
+        ];
+
+        function buildSortMenu() {
+            var menu = document.getElementById("sortMenu");
+            menu.innerHTML = SORTS.map(function(s) {
+                return '<div class="sort-item' + (state.sort===s.key?" active":"") + '" data-s="' + s.key + '">' + s.icon + ' ' + s.label + '</div>';
+            }).join("");
+            menu.querySelectorAll(".sort-item").forEach(function(el) {
+                el.addEventListener("click", function() {
+                    state.sort = el.dataset.s;
+                    document.getElementById("sortLabel").textContent = SORTS.find(function(s){return s.key===state.sort;}).label;
+                    menu.classList.remove("open");
+                    buildSortMenu();
+                    applyFilters();
                 });
             });
         }
-    }
 
-    renderOpts() {
-        const q = this.searchInp.value.toLowerCase();
-        const list = this.options.filter(o => o.toLowerCase().includes(q));
-        this.optsDiv.innerHTML = list.map(o => {
-            const esc = o.replace(/"/g, "&quot;");
-            return `<label class="ms-opt"><input type="checkbox" value="${esc}" ${this.selected.has(o)?"checked":""}>${o}</label>`;
-        }).join("");
-        this.optsDiv.querySelectorAll("input").forEach(inp => {
-            inp.addEventListener("change", e => {
-                if (e.target.checked) this.selected.add(e.target.value);
-                else this.selected.delete(e.target.value);
-                this.updTrigger(); this.fire();
-            });
-        });
-    }
-
-    updTrigger() {
-        const n = this.selected.size;
-        if (n === 0) {
-            this.trigger.innerHTML = `<span class="ph">— 全部 —</span><span class="arrow">▾</span>`;
-        } else {
-            const isAnd = this.hasAndOr && this.mode === 'and';
-            const cls = isAnd ? 'badge-and' : 'badge';
-            const label = isAnd ? `${n} 已选 AND` : `${n} 已选`;
-            this.trigger.innerHTML = `<span class="${cls}">${label}</span><span class="arrow">▾</span>`;
-        }
-    }
-
-    toggle() {
-        const open = this.panel.classList.contains("open");
-        closeAllDD();
-        if (!open) {
-            this.panel.classList.add("open");
-            this.trigger.classList.add("active");
-            setTimeout(() => this.searchInp.focus(), 50);
-        }
-    }
-
-    close() {
-        this.panel.classList.remove("open");
-        this.trigger.classList.remove("active");
-    }
-
-    reset() {
-        this.selected.clear(); this.searchInp.value = "";
-        this.mode = 'or';
-        if (this.hasAndOr && this.modeContainer) {
-            this.modeContainer.querySelectorAll('.ms-mode-btn').forEach(btn => {
-                btn.classList.remove('active-or', 'active-and');
-                if (btn.dataset.mode === 'or') btn.classList.add('active-or');
-            });
-        }
-        this.renderOpts(); this.updTrigger();
-    }
-
-    fire() {
-        state.filters[this.key] = [...this.selected];
-        applyFilters();
-    }
-}
-
-// ============================================================
-// BUILD FILTERS
-// ============================================================
-function buildFilters() {
-    const grid = document.getElementById("filterGrid");
-    grid.innerHTML = "";
-
-    // Multi-selects (with optional AND/OR)
-    [
-        { key:"community", label:"Community 社区", icon:"📍", options: COMMUNITIES, hasAndOr: false },
-        { key:"wall_material", label:"Wall Material 墙体材料", icon:"🧱", options: WALL_MATS, hasAndOr: true },
-        { key:"style", label:"Style 风格", icon:"🎨", options: STYLES, hasAndOr: true },
-        { key:"tags", label:"Tags 标签", icon:"🏷️", options: ALL_TAGS, hasAndOr: true },
-        { key:"facade_bump", label:"Facade Bump 立面凸起", icon:"📊", options: BUMPS, hasAndOr: true },
-        { key:"main_roof", label:"Main Roof 主屋顶", icon:"🏠", options: ROOFS, hasAndOr: true },
-    ].forEach(d => {
-        if (d.options.length === 0) return;
-        const div = document.createElement("div");
-        grid.appendChild(div);
-        allMS.push(new MultiSelect(div, d));
-    });
-
-    // Single-selects
-    [
-        { key:"story", label:"Story 层数", icon:"🏢", options: STORY_OPTS },
-        { key:"project", label:"Project 项目", icon:"🏗️", options: PROJECTS },
-        { key:"entry", label:"Entry 入口", icon:"🚪", options: ENTRY_OPTS },
-        { key:"garage", label:"Garage 车库", icon:"🚗", options: GARAGE_OPTS },
-    ].forEach(d => {
-        if (d.options.length === 0) return;
-        const div = document.createElement("div");
-        div.innerHTML = `
-            <span class="ms-label">${d.icon} ${d.label}</span>
-            <select data-key="${d.key}" class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" style="min-height:38px">
-                <option value="">— 全部 —</option>
-                ${d.options.map(o => `<option value="${o}">${o}</option>`).join("")}
-            </select>`;
-        grid.appendChild(div);
-        div.querySelector("select").addEventListener("change", e => {
-            state.filters[e.target.dataset.key] = e.target.value;
-            applyFilters();
-        });
-    });
-
-    // Revit Model
-    const rv = document.createElement("div");
-    rv.innerHTML = `
-        <span class="ms-label">📐 Revit Model</span>
-        <select data-key="revit_model" class="w-full px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" style="min-height:38px">
-            <option value="">— 全部 —</option>
-            <option value="true">✅ 有</option>
-            <option value="false">❌ 无</option>
-        </select>`;
-    grid.appendChild(rv);
-    rv.querySelector("select").addEventListener("change", e => {
-        state.filters.revit_model = e.target.value;
-        applyFilters();
-    });
-
-    // ===== Facade Width Target (tolerance-based) =====
-    const rDiv = document.getElementById("rangeFilters");
-    rDiv.innerHTML = `
-        <div>
-            <span class="ms-label">🏠 Facade Width 目标宽度 (ft)</span>
-            <div class="rg-group">
-                <input type="number" class="rg-input" placeholder="输入目标宽度，如 68" id="fwTarget" step="1" style="width: 200px;">
-            </div>
-            <div style="font-size: 10px; color: #9ca3af; margin-top: 3px;">自动使用每条笔记的 facade_width_tolerance 匹配</div>
-        </div>`;
-
-    document.getElementById("fwTarget").addEventListener("input", e => {
-        state.filters.fw_target = e.target.value !== "" ? parseFloat(e.target.value) : null;
-        applyFilters();
-    });
-}
-
-// ============================================================
-// SORT (no Lot Width)
-// ============================================================
-const SORTS = [
-    { key:"id_asc",  label:"ID ↑",  icon:"🔤" },
-    { key:"id_desc", label:"ID ↓",  icon:"🔤" },
-    { key:"fw_asc",  label:"Facade Width ↑ 窄→宽", icon:"📐" },
-    { key:"fw_desc", label:"Facade Width ↓ 宽→窄", icon:"📐" },
-];
-
-function buildSortMenu() {
-    const menu = document.getElementById("sortMenu");
-    menu.innerHTML = SORTS.map(s => `
-        <div class="sort-item${state.sort===s.key?" active":""}" data-s="${s.key}">
-            ${s.icon} ${s.label}
-        </div>`).join("");
-    menu.querySelectorAll(".sort-item").forEach(el => {
-        el.addEventListener("click", () => {
-            state.sort = el.dataset.s;
-            document.getElementById("sortLabel").textContent = SORTS.find(s=>s.key===state.sort).label;
-            menu.classList.remove("open");
-            buildSortMenu();
-            applyFilters();
-        });
-    });
-}
-
-document.getElementById("sortBtn").addEventListener("click", e => {
-    e.stopPropagation();
-    const m = document.getElementById("sortMenu");
-    const open = m.classList.contains("open");
-    closeAllDD();
-    if (!open) m.classList.add("open");
-});
-
-function sortData(arr, key) {
-    const s = [...arr];
-    switch(key) {
-        case "id_asc":  s.sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric:true})); break;
-        case "id_desc": s.sort((a,b) => b.id.localeCompare(a.id, undefined, {numeric:true})); break;
-        case "fw_asc":  s.sort((a,b) => (a.facade_width||0)-(b.facade_width||0)); break;
-        case "fw_desc": s.sort((a,b) => (b.facade_width||0)-(a.facade_width||0)); break;
-    }
-    return s;
-}
-
-// ============================================================
-// FILTER LOGIC (with OR/AND + tolerance matching)
-// ============================================================
-function getMode(key) {
-    const ms = allMS.find(m => m.key === key);
-    return ms ? ms.mode : 'or';
-}
-
-function matchMulti(filterVals, dataVals, mode) {
-    if (filterVals.length === 0) return true;
-    if (mode === 'and') return filterVals.every(v => dataVals.includes(v));
-    return filterVals.some(v => dataVals.includes(v));
-}
-
-function applyFilters() {
-    const f = state.filters;
-    let res = DATA.filter(d => {
-        // Community (string field, always OR)
-        if (f.community.length && !f.community.includes(d.community)) return false;
-
-        // Array fields with OR/AND mode
-        const arrayFields = ['wall_material', 'style', 'tags', 'facade_bump', 'main_roof'];
-        for (const key of arrayFields) {
-            if (!matchMulti(f[key], d[key], getMode(key))) return false;
-        }
-
-        // Single selects
-        if (f.story && d.story !== f.story) return false;
-        if (f.project && d.project !== f.project) return false;
-        if (f.entry && d.entry !== f.entry) return false;
-        if (f.garage && d.garage !== f.garage) return false;
-        if (f.revit_model === "true" && !d.revit_model) return false;
-        if (f.revit_model === "false" && d.revit_model) return false;
-
-        // Facade Width — tolerance-based matching
-        if (f.fw_target !== null) {
-            if (d.facade_width === null) return false;
-            const tol = d.facade_width_tolerance || 0;
-            if (Math.abs(d.facade_width - f.fw_target) > tol) return false;
-        }
-
-        return true;
-    });
-    state.filtered = sortData(res, state.sort);
-    renderCards();
-    updCount();
-    updActiveFilters();
-}
-
-// ============================================================
-// IMAGE HELPER
-// ============================================================
-function imgUrl(path) {
-    if (!path) return null;
-    if (path.startsWith("http://") || path.startsWith("https://")) return path;
-    let name = path;
-    if (CONFIG.STRIP_IMAGE_FOLDERS) name = path.split("/").pop();
-    return CONFIG.IMAGE_BASE_PATH + encodeURIComponent(name).replace(/%2F/g, "/");
-}
-
-// ============================================================
-// RENDER CARDS
-// ============================================================
-function renderCards() {
-    const grid = document.getElementById("cardGrid");
-    const empty = document.getElementById("emptyState");
-
-    if (state.filtered.length === 0) {
-        grid.innerHTML = "";
-        empty.classList.remove("hidden");
-        return;
-    }
-    empty.classList.add("hidden");
-
-    grid.innerHTML = state.filtered.map((d, i) => {
-        const hasImg = d.images && d.images.length > 0;
-        const src = hasImg ? imgUrl(d.images[0]) : null;
-        const imgCount = d.images ? d.images.length : 0;
-
-        const chips = [
-            ...d.style.map(s => `<span class="chip chip-green">${s}</span>`),
-            ...d.wall_material.map(m => `<span class="chip chip-blue">${m}</span>`),
-            ...d.tags.map(t => `<span class="chip chip-yellow">${t}</span>`),
-            ...d.facade_bump.map(b => `<span class="chip chip-purple">${b}</span>`),
-            ...d.main_roof.map(r => `<span class="chip chip-pink">${r}</span>`),
-        ].join("");
-
-        return `<div class="card" data-i="${i}">
-            <div class="relative">
-                ${hasImg
-                    ? `<img class="card-img" src="${src}" alt="${d.id}" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'card-img-ph\\'><span class=\\'icon\\'>🏠</span><span class=\\'txt\\'>图片未找到</span></div>'">`
-                    : `<div class="card-img-ph"><span class="icon">🏠</span><span class="txt">无图片</span></div>`}
-                ${imgCount > 1 ? `<span class="img-counter">📷 ${imgCount}</span>` : ""}
-            </div>
-            <div class="p-3">
-                <div class="flex items-center justify-between mb-1">
-                    <h3 class="font-bold text-gray-800 text-sm truncate">${d.id}</h3>
-                    ${d.revit_model ? `<span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-semibold border border-green-200 whitespace-nowrap ml-2">📐 Revit</span>` : ""}
-                </div>
-                <div class="text-xs text-gray-500 space-y-0.5 mb-2">
-                    ${d.community ? `<div>📍 ${d.community}${d.project ? " · "+d.project : ""}</div>` : ""}
-                    <div>
-                        ${d.story ? "🏢 "+d.story+"-Story" : ""}
-                        ${d.entry ? " · 🚪 "+d.entry : ""}
-                        ${d.garage ? " · 🚗 "+d.garage : ""}
-                    </div>
-                    <div>
-                        ${d.facade_width !== null ? "📐 "+d.facade_width+"ft (±"+(d.facade_width_tolerance||0)+")" : ""}
-                        ${d.lot_width !== null ? " · 📏 "+d.lot_width+(d.lot_depth ? "×"+d.lot_depth : "")+"ft" : ""}
-                    </div>
-                </div>
-                ${chips ? `<div class="flex flex-wrap">${chips}</div>` : ""}
-            </div>
-        </div>`;
-    }).join("");
-}
-
-document.getElementById("cardGrid").addEventListener("click", e => {
-    const card = e.target.closest(".card");
-    if (card) openModal(parseInt(card.dataset.i));
-});
-
-function updCount() {
-    const t = DATA.length, s = state.filtered.length;
-    document.getElementById("headerCount").textContent = `${s} / ${t}`;
-    document.getElementById("resultSummary").textContent = `显示 ${s} / ${t} 条结果`;
-}
-
-// ============================================================
-// ACTIVE FILTER CHIPS
-// ============================================================
-function updActiveFilters() {
-    const div = document.getElementById("activeFilters");
-    const f = state.filters;
-    const chips = [];
-
-    const multiMap = {
-        community: "📍", wall_material: "🧱", style: "🎨",
-        tags: "🏷️", facade_bump: "📊", main_roof: "🏠"
-    };
-    Object.entries(multiMap).forEach(([k, icon]) => {
-        if (f[k].length) {
-            const ms = allMS.find(m => m.key === k);
-            const modeTag = (ms && ms.hasAndOr && ms.mode === 'and') ? ' [AND]' : '';
-            f[k].forEach(v => chips.push({ l: `${icon} ${v}${modeTag}`, g: k, v }));
-        }
-    });
-
-    if (f.story) chips.push({ l: `🏢 ${f.story}层`, g: "story", v: f.story });
-    if (f.project) chips.push({ l: `🏗️ ${f.project}`, g: "project", v: f.project });
-    if (f.entry) chips.push({ l: `🚪 ${f.entry}`, g: "entry", v: f.entry });
-    if (f.garage) chips.push({ l: `🚗 ${f.garage}`, g: "garage", v: f.garage });
-    if (f.revit_model) chips.push({ l: `📐 Revit: ${f.revit_model==="true"?"有":"无"}`, g: "revit_model", v: f.revit_model });
-    if (f.fw_target !== null) chips.push({ l: `🏠 目标: ${f.fw_target}ft`, g: "fw_target", v: null });
-
-    div.innerHTML = chips.map((c, i) =>
-        `<span class="af-chip">${c.l}<button data-ci="${i}" title="移除">✕</button></span>`
-    ).join("");
-
-    div.querySelectorAll("button[data-ci]").forEach(btn => {
-        btn.addEventListener("click", e => {
+        document.getElementById("sortBtn").addEventListener("click", function(e) {
             e.stopPropagation();
-            const c = chips[parseInt(btn.dataset.ci)];
-            removeFilter(c.g, c.v);
+            var m = document.getElementById("sortMenu");
+            var open = m.classList.contains("open");
+            closeAllDD();
+            if (!open) m.classList.add("open");
         });
-    });
-}
 
-function removeFilter(group, value) {
-    const f = state.filters;
-    const multiKeys = ["community","wall_material","style","tags","facade_bump","main_roof"];
+        function sortData(arr, key) {
+            var s = arr.slice();
+            switch(key) {
+                case "id_asc":  s.sort(function(a,b){return a.id.localeCompare(b.id,undefined,{numeric:true});}); break;
+                case "id_desc": s.sort(function(a,b){return b.id.localeCompare(a.id,undefined,{numeric:true});}); break;
+                case "fw_asc":  s.sort(function(a,b){return (a.facade_width||0)-(b.facade_width||0);}); break;
+                case "fw_desc": s.sort(function(a,b){return (b.facade_width||0)-(a.facade_width||0);}); break;
+            }
+            return s;
+        }
 
-    if (multiKeys.includes(group)) {
-        f[group] = f[group].filter(v => v !== value);
-        const ms = allMS.find(m => m.key === group);
-        if (ms) { ms.selected.delete(value); ms.renderOpts(); ms.updTrigger(); }
-    } else if (["story","project","entry","garage","revit_model"].includes(group)) {
-        f[group] = "";
-        const sel = document.querySelector(`select[data-key="${group}"]`);
-        if (sel) sel.value = "";
-    } else if (group === "fw_target") {
-        f.fw_target = null;
-        document.getElementById("fwTarget").value = "";
-    }
-    applyFilters();
-}
+        // ============================================================
+        // FILTER
+        // ============================================================
+        function getMode(key) {
+            var ms = allMS.find(function(m){return m.key===key;});
+            return ms ? ms.mode : "or";
+        }
 
-// ============================================================
-// MODAL
-// ============================================================
-let crsIdx = 0, crsTotal = 0;
+        function matchMulti(filterVals, dataVals, mode) {
+            if (filterVals.length === 0) return true;
+            if (mode === "and") return filterVals.every(function(v){return dataVals.indexOf(v) >= 0;});
+            return filterVals.some(function(v){return dataVals.indexOf(v) >= 0;});
+        }
 
-function openModal(idx) {
-    const d = state.filtered[idx];
-    if (!d) return;
+        function applyFilters() {
+            var f = state.filters;
+            var res = DATA.filter(function(d) {
+                if (f.community.length && f.community.indexOf(d.community) < 0) return false;
 
-    const modal = document.getElementById("modal");
-    const box = document.getElementById("modalBox");
+                var arrayFields = ["wall_material","style","tags","facade_bump","main_roof"];
+                for (var i = 0; i < arrayFields.length; i++) {
+                    var key = arrayFields[i];
+                    if (!matchMulti(f[key], d[key], getMode(key))) return false;
+                }
 
-    let crsHtml;
-    if (d.images && d.images.length > 0) {
-        const slides = d.images.map(img =>
-            `<img class="crs-slide" src="${imgUrl(img)}" alt="${d.id}" onerror="this.style.background='linear-gradient(135deg,#e0e7ff,#dbeafe)';this.alt='Image not found';this.src=''">`
-        ).join("");
-        crsHtml = `<div class="crs" id="crs">
-            <div class="crs-track" id="crsTrack">${slides}</div>
-            ${d.images.length > 1 ? `
-                <button class="crs-btn prev" id="crsPrev">‹</button>
-                <button class="crs-btn next" id="crsNext">›</button>
-                <div class="crs-dots" id="crsDots">
-                    ${d.images.map((_,i) => `<button class="crs-dot${i===0?" active":""}" data-di="${i}"></button>`).join("")}
-                </div>` : ""}
-        </div>`;
-        crsTotal = d.images.length;
-    } else {
-        crsHtml = `<div style="height:180px;background:linear-gradient(135deg,#e0e7ff,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:48px">🏠</div>`;
-        crsTotal = 0;
-    }
-    crsIdx = 0;
+                if (f.story && d.story !== f.story) return false;
+                if (f.project && d.project !== f.project) return false;
+                if (f.entry && d.entry !== f.entry) return false;
+                if (f.garage && d.garage !== f.garage) return false;
+                if (f.revit_model === "true" && !d.revit_model) return false;
+                if (f.revit_model === "false" && d.revit_model) return false;
 
-    const rows = [
-        d.community && ["📍 Community 社区", d.community],
-        d.project && ["🏗️ Project 项目", d.project],
-        d.story && ["🏢 Story 层数", d.story + "-Story"],
-        d.entry && ["🚪 Entry 入口", d.entry],
-        d.garage && ["🚗 Garage 车库", d.garage],
-        ["📐 Revit Model", d.revit_model ? "✅ 有" : "❌ 无"],
-        d.facade_width !== null && ["🏠 Facade Width 门面宽度", `${d.facade_width} ft (±${d.facade_width_tolerance || 0})`],
-        d.lot_width !== null && ["📏 Lot Width 地块宽度", `${d.lot_width} ft`],
-        d.lot_depth !== null && ["📏 Lot Depth 地块深度", `${d.lot_depth} ft`],
-        d.wall_material.length && ["🧱 Wall Material 墙体材料", d.wall_material.join(", ")],
-        d.style.length && ["🎨 Style 风格", d.style.join(", ")],
-        d.facade_bump.length && ["📊 Facade Bump 立面凸起", d.facade_bump.join(", ")],
-        d.main_roof.length && ["🏠 Main Roof 主屋顶", d.main_roof.join(", ")],
-        d.tags.length && ["🏷️ Tags 标签", d.tags.join(", ")],
-    ].filter(Boolean);
+                if (f.fw_target !== null) {
+                    if (d.facade_width === null) return false;
+                    var tol = d.facade_width_tolerance || 0;
+                    if (Math.abs(d.facade_width - f.fw_target) > tol) return false;
+                }
 
-    box.innerHTML = `
-        <div class="sticky top-0 bg-white flex items-center justify-between px-5 py-3 border-b border-gray-200 z-10 rounded-t-xl">
-            <h2 class="text-base font-bold text-gray-800">${d.id}${d.elevation_id && d.elevation_id !== d.id ? ` <span class="text-gray-400 font-normal text-sm">(${d.elevation_id})</span>` : ""}</h2>
-            <button id="modalClose" class="text-gray-400 hover:text-gray-600 text-xl leading-none px-1">✕</button>
-        </div>
-        ${crsHtml}
-        <div class="p-5">
-            <table class="w-full text-sm">
-                ${rows.map(([label, val]) => `
-                    <tr class="border-b border-gray-50">
-                        <td class="py-2 pr-3 text-gray-400 font-medium whitespace-nowrap text-xs">${label}</td>
-                        <td class="py-2 text-gray-700 text-xs">${val}</td>
-                    </tr>`).join("")}
-            </table>
-            ${d.description ? `<div class="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-600 leading-relaxed">
-                <div class="text-xs font-semibold text-gray-400 mb-1">📝 Description 描述</div>
-                ${d.description}
-            </div>` : ""}
-        </div>`;
+                return true;
+            });
+            state.filtered = sortData(res, state.sort);
+            renderCards();
+            updCount();
+            updActiveFilters();
+        }
 
-    modal.classList.add("open");
-    document.body.style.overflow = "hidden";
+        // ============================================================
+        // IMAGE
+        // ============================================================
+        function imgUrl(path) {
+            if (!path) return null;
+            if (path.indexOf("http://") === 0 || path.indexOf("https://") === 0) return path;
+            var name = path;
+            if (CONFIG.STRIP_IMAGE_FOLDERS) name = path.split("/").pop();
+            return CONFIG.IMAGE_BASE_PATH + encodeURIComponent(name);
+        }
 
-    document.getElementById("modalClose").addEventListener("click", closeModal);
-    if (document.getElementById("crsPrev")) {
-        document.getElementById("crsPrev").addEventListener("click", () => crsGo((crsIdx - 1 + crsTotal) % crsTotal));
-        document.getElementById("crsNext").addEventListener("click", () => crsGo((crsIdx + 1) % crsTotal));
-        document.querySelectorAll("#crsDots .crs-dot").forEach(dot => {
-            dot.addEventListener("click", () => crsGo(parseInt(dot.dataset.di)));
+        function handleImgError(img) {
+            img.onerror = null;
+            var ph = document.createElement("div");
+            ph.className = "card-img-ph";
+            ph.innerHTML = '<span class="icon">\uD83C\uDFE0</span><span class="txt">图片未找到</span>';
+            img.parentElement.replaceChild(ph, img);
+        }
+
+        // ============================================================
+        // CARDS
+        // ============================================================
+        function renderCards() {
+            var grid = document.getElementById("cardGrid");
+            var empty = document.getElementById("emptyState");
+
+            if (state.filtered.length === 0) {
+                grid.innerHTML = "";
+                empty.classList.remove("hidden");
+                return;
+            }
+            empty.classList.add("hidden");
+
+            grid.innerHTML = state.filtered.map(function(d, i) {
+                var hasImg = d.images && d.images.length > 0;
+                var src = hasImg ? imgUrl(d.images[0]) : null;
+                var imgCount = d.images ? d.images.length : 0;
+
+                var chips = [];
+                d.style.forEach(function(s){ chips.push('<span class="chip chip-green">'+esc(s)+'</span>'); });
+                d.wall_material.forEach(function(m){ chips.push('<span class="chip chip-blue">'+esc(m)+'</span>'); });
+                d.tags.forEach(function(t){ chips.push('<span class="chip chip-yellow">'+esc(t)+'</span>'); });
+                d.facade_bump.forEach(function(b){ chips.push('<span class="chip chip-purple">'+esc(b)+'</span>'); });
+                d.main_roof.forEach(function(r){ chips.push('<span class="chip chip-pink">'+esc(r)+'</span>'); });
+
+                var imgHtml;
+                if (hasImg) {
+                    imgHtml = '<img class="card-img" src="' + esc(src) + '" alt="' + esc(d.id) + '" onerror="handleImgError(this)">';
+                } else {
+                    imgHtml = '<div class="card-img-ph"><span class="icon">\uD83C\uDFE0</span><span class="txt">无图片</span></div>';
+                }
+
+                var counterHtml = imgCount > 1 ? '<span class="img-counter">\uD83D\uDCF7 ' + imgCount + '</span>' : '';
+
+                var infoLines = '';
+                if (d.community) infoLines += '<div>\uD83D\uDCCD ' + esc(d.community) + (d.project ? ' \u00B7 ' + esc(d.project) : '') + '</div>';
+                var line2 = '';
+                if (d.story) line2 += '\uD83C\uDFE2 ' + esc(d.story) + '-Story';
+                if (d.entry) line2 += ' \u00B7 \uD83D\uDEAA ' + esc(d.entry);
+                if (d.garage) line2 += ' \u00B7 \uD83D\uDE97 ' + esc(d.garage);
+                if (line2) infoLines += '<div>' + line2 + '</div>';
+                var line3 = '';
+                if (d.facade_width !== null) line3 += '\uD83D\uDCD0 ' + d.facade_width + 'ft (\u00B1' + (d.facade_width_tolerance||0) + ')';
+                if (d.lot_width !== null) line3 += ' \u00B7 \uD83D\uDCCF ' + d.lot_width + (d.lot_depth ? '\u00D7'+d.lot_depth : '') + 'ft';
+                if (line3) infoLines += '<div>' + line3 + '</div>';
+
+                return '<div class="card" data-i="' + i + '">' +
+                    '<div class="relative">' + imgHtml + counterHtml + '</div>' +
+                    '<div class="p-3">' +
+                    '<div class="flex items-center justify-between mb-1">' +
+                    '<h3 class="font-bold text-gray-800 text-sm truncate">' + esc(d.id) + '</h3>' +
+                    (d.revit_model ? '<span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-semibold border border-green-200 whitespace-nowrap ml-2">\uD83D\uDCD0 Revit</span>' : '') +
+                    '</div>' +
+                    '<div class="text-xs text-gray-500 space-y-0.5 mb-2">' + infoLines + '</div>' +
+                    (chips.length ? '<div class="flex flex-wrap">' + chips.join('') + '</div>' : '') +
+                    '</div></div>';
+            }).join("");
+        }
+
+        function esc(s) {
+            if (s == null) return '';
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        document.getElementById("cardGrid").addEventListener("click", function(e) {
+            var card = e.target.closest(".card");
+            if (card) openModal(parseInt(card.dataset.i));
         });
-    }
-}
 
-function crsGo(idx) {
-    crsIdx = idx;
-    const track = document.getElementById("crsTrack");
-    if (track) track.style.transform = `translateX(-${idx * 100}%)`;
-    document.querySelectorAll("#crsDots .crs-dot").forEach((d, i) => d.classList.toggle("active", i === idx));
-}
+        function updCount() {
+            var t = DATA.length, s = state.filtered.length;
+            document.getElementById("headerCount").textContent = s + ' / ' + t;
+            document.getElementById("resultSummary").textContent = '显示 ' + s + ' / ' + t + ' 条结果';
+        }
 
-function closeModal() {
-    document.getElementById("modal").classList.remove("open");
-    document.body.style.overflow = "";
-}
+        // ============================================================
+        // ACTIVE FILTER CHIPS
+        // ============================================================
+        function updActiveFilters() {
+            var div = document.getElementById("activeFilters");
+            var f = state.filters;
+            var chips = [];
 
-document.getElementById("modal").addEventListener("click", e => {
-    if (e.target === document.getElementById("modal")) closeModal();
-});
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+            var multiMap = {community:"\uD83D\uDCCD",wall_material:"\uD83E\uDDF1",style:"\uD83C\uDFA8",tags:"\uD83C\uDFF7\uFE0F",facade_bump:"\uD83D\uDCCA",main_roof:"\uD83C\uDFE0"};
+            Object.keys(multiMap).forEach(function(k) {
+                if (f[k].length) {
+                    var ms = allMS.find(function(m){return m.key===k;});
+                    var modeTag = (ms && ms.hasAndOr && ms.mode === "and") ? " [AND]" : "";
+                    f[k].forEach(function(v) {
+                        chips.push({l:multiMap[k]+' '+v+modeTag, g:k, v:v});
+                    });
+                }
+            });
+            if (f.story) chips.push({l:"\uD83C\uDFE2 "+f.story+"层",g:"story",v:f.story});
+            if (f.project) chips.push({l:"\uD83C\uDFD7\uFE0F "+f.project,g:"project",v:f.project});
+            if (f.entry) chips.push({l:"\uD83D\uDEAA "+f.entry,g:"entry",v:f.entry});
+            if (f.garage) chips.push({l:"\uD83D\uDE97 "+f.garage,g:"garage",v:f.garage});
+            if (f.revit_model) chips.push({l:"\uD83D\uDCD0 Revit: "+(f.revit_model==="true"?"有":"无"),g:"revit_model",v:f.revit_model});
+            if (f.fw_target !== null) chips.push({l:"\uD83C\uDFE0 目标: "+f.fw_target+"ft",g:"fw_target",v:null});
 
-// ============================================================
-// RESET
-// ============================================================
-document.getElementById("resetBtn").addEventListener("click", () => {
-    state.filters = {
-        community: [], story: "", wall_material: [], style: [],
-        tags: [], project: "", entry: "", garage: "",
-        revit_model: "", facade_bump: [], main_roof: [],
-        fw_target: null,
-    };
-    allMS.forEach(m => m.reset());
-    document.querySelectorAll("#filterGrid select").forEach(s => s.value = "");
-    document.getElementById("fwTarget").value = "";
-    applyFilters();
-});
+            div.innerHTML = chips.map(function(c,i) {
+                return '<span class="af-chip">'+esc(c.l)+'<button data-ci="'+i+'" title="移除">\u2715</button></span>';
+            }).join("");
 
-// ============================================================
-// FILTER TOGGLE
-// ============================================================
-document.getElementById("filterToggle").addEventListener("click", () => {
-    const body = document.getElementById("filterBody");
-    const arrow = document.getElementById("filterArrow");
-    const hidden = body.style.display === "none";
-    body.style.display = hidden ? "" : "none";
-    arrow.textContent = hidden ? "▼" : "▶";
-});
+            div.querySelectorAll("button[data-ci]").forEach(function(btn) {
+                btn.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    var c = chips[parseInt(btn.dataset.ci)];
+                    removeFilter(c.g, c.v);
+                });
+            });
+        }
 
-// ============================================================
-// INIT
-// ============================================================
-buildFilters();
-buildSortMenu();
-document.getElementById("sortLabel").textContent = SORTS.find(s => s.key === state.sort).label;
-state.filtered = sortData([...DATA], state.sort);
-renderCards();
-updCount();
-updActiveFilters();
-</script>
+        function removeFilter(group, value) {
+            var f = state.filters;
+            var multiKeys = ["community","wall_material","style","tags","facade_bump","main_roof"];
+            if (multiKeys.indexOf(group) >= 0) {
+                f[group] = f[group].filter(function(v){return v!==value;});
+                var ms = allMS.find(function(m){return m.key===group;});
+                if (ms) { ms.selected.delete(value); ms.renderOpts(); ms.updTrigger(); }
+            } else if (["story","project","entry","garage","revit_model"].indexOf(group) >= 0) {
+                f[group] = "";
+                var sel = document.querySelector('select[data-key="'+group+'"]');
+                if (sel) sel.value = "";
+            } else if (group === "fw_target") {
+                f.fw_target = null;
+                document.getElementById("fwTarget").value = "";
+            }
+            applyFilters();
+        }
+
+        // ============================================================
+        // MODAL
+        // ============================================================
+        var crsIdx = 0, crsTotal = 0;
+
+        function openModal(idx) {
+            var d = state.filtered[idx];
+            if (!d) return;
+
+            var modal = document.getElementById("modal");
+            var box = document.getElementById("modalBox");
+
+            var crsHtml;
+            if (d.images && d.images.length > 0) {
+                var slides = d.images.map(function(img) {
+                    return '<img class="crs-slide" src="' + esc(imgUrl(img)) + '" alt="' + esc(d.id) + '" onerror="this.style.background=\'#e0e7ff\'">';
+                }).join("");
+                var navHtml = '';
+                if (d.images.length > 1) {
+                    var dots = d.images.map(function(_,i) {
+                        return '<button class="crs-dot' + (i===0?' active':'') + '" data-di="' + i + '"></button>';
+                    }).join("");
+                    navHtml = '<button class="crs-btn prev" id="crsPrev">\u2039</button>' +
+                        '<button class="crs-btn next" id="crsNext">\u203A</button>' +
+                        '<div class="crs-dots" id="crsDots">' + dots + '</div>';
+                }
+                crsHtml = '<div class="crs" id="crs"><div class="crs-track" id="crsTrack">' + slides + '</div>' + navHtml + '</div>';
+                crsTotal = d.images.length;
+            } else {
+                crsHtml = '<div style="height:180px;background:linear-gradient(135deg,#e0e7ff,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:48px">\uD83C\uDFE0</div>';
+                crsTotal = 0;
+            }
+            crsIdx = 0;
+
+            var rows = [];
+            if (d.community) rows.push(["\uD83D\uDCCD Community 社区",d.community]);
+            if (d.project) rows.push(["\uD83C\uDFD7\uFE0F Project 项目",d.project]);
+            if (d.story) rows.push(["\uD83C\uDFE2 Story 层数",d.story+"-Story"]);
+            if (d.entry) rows.push(["\uD83D\uDEAA Entry 入口",d.entry]);
+            if (d.garage) rows.push(["\uD83D\uDE97 Garage 车库",d.garage]);
+            rows.push(["\uD83D\uDCD0 Revit Model", d.revit_model?"\u2705 有":"\u274C 无"]);
+            if (d.facade_width !== null) rows.push(["\uD83C\uDFE0 Facade Width 门面宽度",d.facade_width+" ft (\u00B1"+(d.facade_width_tolerance||0)+")"]);
+            if (d.lot_width !== null) rows.push(["\uD83D\uDCCF Lot Width 地块宽度",d.lot_width+" ft"]);
+            if (d.lot_depth !== null) rows.push(["\uD83D\uDCCF Lot Depth 地块深度",d.lot_depth+" ft"]);
+            if (d.wall_material.length) rows.push(["\uD83E\uDDF1 Wall Material 墙体材料",d.wall_material.join(", ")]);
+            if (d.style.length) rows.push(["\uD83C\uDFA8 Style 风格",d.style.join(", ")]);
+            if (d.facade_bump.length) rows.push(["\uD83D\uDCCA Facade Bump 凸起",d.facade_bump.join(", ")]);
+            if (d.main_roof.length) rows.push(["\uD83C\uDFE0 Main Roof 主屋顶",d.main_roof.join(", ")]);
+            if (d.tags.length) rows.push(["\uD83C\uDFF7\uFE0F Tags 标签",d.tags.join(", ")]);
+
+            var tableRows = rows.map(function(r) {
+                return '<tr class="border-b border-gray-50"><td class="py-2 pr-3 text-gray-400 font-medium whitespace-nowrap text-xs">'+esc(r[0])+'</td><td class="py-2 text-gray-700 text-xs">'+esc(r[1])+'</td></tr>';
+            }).join("");
+
+            var descHtml = '';
+            if (d.description) {
+                descHtml = '<div class="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-600 leading-relaxed">' +
+                    '<div class="text-xs font-semibold text-gray-400 mb-1">\uD83D\uDCDD Description 描述</div>' +
+                    esc(d.description).replace(/\n/g,'<br>') + '</div>';
+            }
+
+            box.innerHTML =
+                '<div class="sticky top-0 bg-white flex items-center justify-between px-5 py-3 border-b border-gray-200 z-10 rounded-t-xl">' +
+                '<h2 class="text-base font-bold text-gray-800">' + esc(d.id) + '</h2>' +
+                '<button id="modalClose" class="text-gray-400 hover:text-gray-600 text-xl leading-none px-1">\u2715</button></div>' +
+                crsHtml +
+                '<div class="p-5"><table class="w-full text-sm">' + tableRows + '</table>' + descHtml + '</div>';
+
+            modal.classList.add("open");
+            document.body.style.overflow = "hidden";
+
+            document.getElementById("modalClose").addEventListener("click", closeModal);
+            var prevBtn = document.getElementById("crsPrev");
+            var nextBtn = document.getElementById("crsNext");
+            if (prevBtn) {
+                prevBtn.addEventListener("click", function(){ crsGo((crsIdx-1+crsTotal)%crsTotal); });
+                nextBtn.addEventListener("click", function(){ crsGo((crsIdx+1)%crsTotal); });
+                document.querySelectorAll("#crsDots .crs-dot").forEach(function(dot) {
+                    dot.addEventListener("click", function(){ crsGo(parseInt(dot.dataset.di)); });
+                });
+            }
+        }
+
+        function crsGo(idx) {
+            crsIdx = idx;
+            var track = document.getElementById("crsTrack");
+            if (track) track.style.transform = "translateX(-" + (idx*100) + "%)";
+            document.querySelectorAll("#crsDots .crs-dot").forEach(function(d,i) {
+                d.classList.toggle("active", i===idx);
+            });
+        }
+
+        function closeModal() {
+            document.getElementById("modal").classList.remove("open");
+            document.body.style.overflow = "";
+        }
+
+        document.getElementById("modal").addEventListener("click", function(e) {
+            if (e.target === document.getElementById("modal")) closeModal();
+        });
+        document.addEventListener("keydown", function(e) { if (e.key==="Escape") closeModal(); });
+
+        // ============================================================
+        // RESET
+        // ============================================================
+        document.getElementById("resetBtn").addEventListener("click", function() {
+            state.filters = {
+                community:[], story:"", wall_material:[], style:[],
+                tags:[], project:"", entry:"", garage:"",
+                revit_model:"", facade_bump:[], main_roof:[],
+                fw_target:null
+            };
+            allMS.forEach(function(m){ m.reset(); });
+            document.querySelectorAll("#filterGrid select").forEach(function(s){ s.value=""; });
+            document.getElementById("fwTarget").value = "";
+            applyFilters();
+        });
+
+        // ============================================================
+        // TOGGLE
+        // ============================================================
+        document.getElementById("filterToggle").addEventListener("click", function() {
+            var body = document.getElementById("filterBody");
+            var arrow = document.getElementById("filterArrow");
+            var hidden = body.style.display === "none";
+            body.style.display = hidden ? "" : "none";
+            arrow.textContent = hidden ? "\u25BC" : "\u25B6";
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        buildFilters();
+        buildSortMenu();
+        document.getElementById("sortLabel").textContent = SORTS.find(function(s){return s.key===state.sort;}).label;
+        state.filtered = sortData(DATA.slice(), state.sort);
+        renderCards();
+        updCount();
+        updActiveFilters();
+    </script>
 </body>
 </html>
